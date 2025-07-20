@@ -1,7 +1,7 @@
 {
   "name": "@mypie/backend",
   "version": "1.0.0",
-  "description": "MyPie Backend API - Express.js server for artist support platform",
+  "description": "StreamSupport Backend API - Express.js server for artist support platform",
   "type": "commonjs",
   "main": "dist/app.js",
   "scripts": {
@@ -95,6 +95,6 @@
     "music",
     "artists"
   ],
-  "author": "MyPie Team",
+  "author": "StreamSupport Team",
   "license": "MIT"
 }
