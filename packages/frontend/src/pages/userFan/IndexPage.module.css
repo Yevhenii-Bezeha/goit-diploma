@@ -1,0 +1,128 @@
+.container {
+  background-color: #dedede;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-width: 0;
+  min-height: max(767px, 100%);
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+  z-index: 2;
+  height: max-content;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  opacity: 1;
+  background-image: url('../../assets/image/bg.png');
+
+  .content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .h1 {
+    white-space: pre-wrap;
+    overflow: visible;
+    font-size: 43px;
+    font-weight: 700;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    border-radius: 0;
+    opacity: 1;
+    align-self: center;
+    min-width: 280px;
+    max-width: 780px;
+    min-height: 0;
+    height: max-content;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: calc(100% + 0px);
+    margin: 4px 0 0;
+  }
+
+  .p {
+    white-space: pre-wrap;
+    overflow: visible;
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+    font-weight: 400;
+    text-align: center;
+    line-height: 1.3;
+    padding: 36px 0 36px 0;
+    border-radius: 0;
+    opacity: 1;
+    align-self: center;
+    min-width: 0;
+    max-width: 600px;
+    min-height: 0;
+    height: max-content;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    z-index: 3;
+  }
+
+  .pSmall {
+    white-space: pre-wrap;
+    overflow: visible;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    line-height: 1.4;
+    border-radius: 0;
+    opacity: 1;
+    align-self: center;
+    min-width: 300px;
+    max-width: 780px;
+    min-height: 45px;
+    height: max-content;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: calc(100% + 0px);
+    margin: 0 0 10px;
+    padding: 20px;
+    z-index: 14;
+  }
+
+  .h2 {
+    white-space: pre-wrap;
+    overflow: visible;
+    font-size: 30px;
+    font-weight: 700;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    border-radius: 0;
+    opacity: 1;
+    align-self: center;
+    min-width: 259px;
+    max-width: 780px;
+    min-height: 45px;
+    height: max-content;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: calc(100% + 0px);
+    margin: 40px 0 40px 0;
+  }
+
+  .icons {
+    padding: 80px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+
+    .svg {
+      fill: rgba(9, 23, 71, 1);
+    }
+  }
+}
