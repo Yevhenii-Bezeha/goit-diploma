@@ -116,3 +116,4 @@ azure-pipelines.yml.bak
 # Miscellaneous
 .vercel
 .netlify
+.cursor
