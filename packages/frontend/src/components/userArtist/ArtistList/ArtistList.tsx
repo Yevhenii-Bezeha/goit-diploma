@@ -2,7 +2,7 @@ import {
   ArtistClaim,
   useCreateStripeOnboardingLinkMutation,
   useGetClaimsQuery,
-  useGetMemberAssignedArtistsQuery,
+  useGetUserArtistQuery,
 } from '../../../redux/userArtist/userArtistApi';
 import { useDeleteClaimMutation } from '../../../redux/userArtist/userArtistApi';
 import Spotify from '../../../assets/icons/spotify.svg';
@@ -308,25 +308,16 @@ export const ArtistList = ({ status, onClaimArtist }: ArtistListProps) => {
   const [createStripeOnboardingLink, { isLoading: isStripeLoading }] = useCreateStripeOnboardingLinkMutation();
   const isAdmin = useSelector(isUserOfficeAdminSelector);
   const selectedOffice = useSelector((state: RootState) => state.userArtist.selectedOffice);
-  const user = useSelector((state: RootState) => state.userArtist.user);
+  const { data: user } = useGetUserArtistQuery();
   const officeId = selectedOffice?._id || '';
   const userId = user?._id;
   const columnsPerRow = useColumnsPerRow();
 
-  // Fetch all claimed artists for admins, only assigned for non-admins
-  const { data: allClaims = [] } = useGetClaimsQuery({ officeId: officeId || '' }, { skip: !isAdmin || !officeId });
-  const { data: assignedArtists = [] } = useGetMemberAssignedArtistsQuery(
-    { officeId: officeId || '', memberId: userId || '' },
-    { skip: isAdmin || !officeId || !userId }
-  );
+  // Fetch all claimed artists for the office
+  const { data: allClaims = [] } = useGetClaimsQuery({ officeId: officeId || '' }, { skip: !officeId });
 
-  // Determine which claims to show
-  let filteredClaims: ArtistClaim[] = [];
-  if (isAdmin) {
-    filteredClaims = allClaims.filter((claim) => claim.claim.status === status);
-  } else {
-    filteredClaims = assignedArtists.filter((claim) => claim.claim.status === status);
-  }
+  // Filter claims by status
+  const filteredClaims = allClaims.filter((claim) => claim.claim.status === status);
 
   const handleStripeSetup = async () => {
     if (!officeId) {

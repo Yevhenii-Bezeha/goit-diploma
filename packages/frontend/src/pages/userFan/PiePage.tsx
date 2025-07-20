@@ -9,8 +9,6 @@ import {
   useGetPieArtistsQuery,
   useBanArtistMutation,
   useSetArtistInclusionMutation,
-  useGetOrphanedTracksQuery,
-  useAddMissingTracksAnytimeMutation,
 } from '../../redux/userFan';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Button, Tabs } from '../../components/shared';
@@ -110,15 +108,6 @@ const PiePage = () => {
 
   const [banArtist] = useBanArtistMutation();
   const [setArtistInclusion] = useSetArtistInclusionMutation();
-  const [addMissingTracksAnytime] = useAddMissingTracksAnytimeMutation();
-
-  // Fetch orphaned tracks
-  const { data: orphanedTracksData } = useGetOrphanedTracksQuery(
-    { pieId: pieActive?._id || '' },
-    { skip: !pieActive?._id }
-  );
-
-  const missingTracks = orphanedTracksData?.tracks || [];
 
   // Fetch pie artists data
   const {
@@ -188,14 +177,6 @@ const PiePage = () => {
       await banArtist({ artistId, banned: true });
     } catch (error) {
       console.error('Error banning artist:', error);
-    }
-  };
-
-  const handleAddMissingTracks = async () => {
-    try {
-      await addMissingTracksAnytime().unwrap();
-    } catch (error) {
-      console.error('Error adding missing tracks:', error);
     }
   };
 
@@ -288,26 +269,7 @@ const PiePage = () => {
             />
           </div>
 
-          {/* Missing Tracks Alert */}
-          {missingTracks.length > 0 && (
-            <div className="px-4 mb-4">
-              <div className="bg-[#1E152C] p-4 rounded-lg border border-[#8B5CF6]/20">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-white font-medium text-sm">Missing Tracks Found</h3>
-                    <p className="text-[#A78BFA] text-xs">
-                      {missingTracks.length} tracks you've listened to aren't included in your micro-donation.
-                    </p>
-                  </div>
-                  <Button
-                    title="Add Missing Tracks"
-                    onClick={handleAddMissingTracks}
-                    className="bg-[#8B5CF6] hover:bg-[#A78BFA] text-white text-sm py-2 px-4 rounded-lg"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {/* Artists Tabs */}
           <div className="flex flex-col flex-1 rounded-t-[20px] px-4">

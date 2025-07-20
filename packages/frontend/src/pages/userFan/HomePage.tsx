@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react';
 import {
   Track,
-  useGetRecentListenedArtistsQuery,
   useGetUserLatestTracksQuery,
   useGetUserQuery,
 } from '../../redux/userFan';
 import { useGetPieActiveQuery } from '../../redux/userFan';
-import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TracksList } from '../../components/userFan';
 import { Button } from '../../components/shared';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import SpotifyLogoSmall from '../../assets/icons/spotify.svg';
-import noArtistImage from '../../assets/image/no-artist-image.png';
 import ReactAvatar from 'react-avatar';
 import {
   BusinessEvents,
@@ -24,38 +22,7 @@ import {
 import { PieCreateModal } from '../../components/userFan/modals/PieCreateModal';
 import { msToTime } from '../../utils';
 
-function formatTimeAgo(dateString?: string) {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  const now = new Date();
-  const diff = Math.floor((now.getTime() - date.getTime()) / 1000); // seconds
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  if (diff < 2592000) return `${Math.floor(diff / 86400)}d ago`;
-  return date.toLocaleDateString();
-}
 
-const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 0,
-  });
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-      });
-    }
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return windowSize;
-};
 
 // Simplified Pie Visual Component
 const PieVisual: React.FC<{ amount: number; className?: string }> = ({ amount, className = "" }) => {
@@ -97,10 +64,6 @@ const HomePage = () => {
   const isInitialLoading = isUserLoading || isPieLoading;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const { width } = useWindowSize();
-  const visibleArtists = width >= 768 ? 8 : 4; // Reduced for simplified version
-
-  const { data: { data: artistsData = [] } = {}, isLoading: isArtistsLoading } = useGetRecentListenedArtistsQuery({});
 
   const [allTracksData, setAllTracksData] = useState<Track[]>([]);
   const {
@@ -173,52 +136,48 @@ const HomePage = () => {
 
           {/* Main Action Section */}
           {pieActive ? (
-            <div className="mb-12">
-              <div className="bg-gradient-to-br from-[#1A1425] to-[#120E16] border border-[#2A2A2A] rounded-2xl p-6 sm:p-8">
-                <div className="flex flex-col lg:flex-row items-center gap-6">
-                  {/* Pie Visual */}
-                  <div className="flex-shrink-0">
-                    <PieVisual amount={pieActive.amount} className="w-20 h-20 sm:w-24 sm:h-24" />
-                  </div>
+            <div className="mb-8">
+              <div className="bg-gradient-to-br from-[#1A1425] to-[#120E16] border border-[#2A2A2A] rounded-xl p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    {/* Pie Visual */}
+                    <PieVisual amount={pieActive.amount} className="w-12 h-12" />
 
-                  {/* Stats */}
-                  <div className="flex-1 text-center lg:text-left">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                      Your Active Micro-Donation Fund
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                      <div className="bg-[#2A2A2A] rounded-lg p-4">
-                        <div className="text-[#9CA3AF] text-sm font-medium">Monthly Budget</div>
-                        <div className="text-green text-2xl font-bold">${pieActive.amount / 100}</div>
+                    {/* Stats */}
+                    <div className="flex items-center gap-6">
+                      <div className="text-center">
+                        <div className="text-[#9CA3AF] text-xs font-medium">Monthly Budget</div>
+                        <div className="text-green text-lg font-bold">${pieActive.amount / 100}</div>
                       </div>
-                      <div className="bg-[#2A2A2A] rounded-lg p-4">
-                        <div className="text-[#9CA3AF] text-sm font-medium">Artists Supported</div>
-                        <div className="text-white text-2xl font-bold">{pieActive.count_artists}</div>
+                      <div className="text-center">
+                        <div className="text-[#9CA3AF] text-xs font-medium">Artists</div>
+                        <div className="text-white text-lg font-bold">{pieActive.count_artists}</div>
                       </div>
-                      <div className="bg-[#2A2A2A] rounded-lg p-4">
-                        <div className="text-[#9CA3AF] text-sm font-medium">Total Listen Time</div>
-                        <div className="text-white text-2xl font-bold">{msToTime(pieActive.total_time_listened_artists)}</div>
+                      <div className="text-center">
+                        <div className="text-[#9CA3AF] text-xs font-medium">Listen Time</div>
+                        <div className="text-white text-lg font-bold">{msToTime(pieActive.total_time_listened_artists)}</div>
                       </div>
                     </div>
-                    <Button
-                      onClick={() => {
-                        trackNavigation(NavigationEvents.NAVIGATION_TO_CREATE_PIE, 'dashboard');
-                        navigate('/pie');
-                      }}
-                      title="Go to Pie"
-                      className="bg-primary hover:bg-primaryLight text-white px-8 py-3 text-lg font-medium rounded-xl transition-all duration-200 hover:scale-105"
-                    />
                   </div>
+
+                  <Button
+                    onClick={() => {
+                      trackNavigation(NavigationEvents.NAVIGATION_TO_CREATE_PIE, 'dashboard');
+                      navigate('/pie');
+                    }}
+                    title="Go to Pie"
+                    className="bg-primary hover:bg-primaryLight text-white px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-105"
+                  />
                 </div>
               </div>
             </div>
           ) : userData?.data.access_token ? (
-            <div className="mb-12">
-              <div className="bg-gradient-to-br from-[#1A1425] to-[#120E16] border border-[#2A2A2A] rounded-2xl p-6 sm:p-8 text-center">
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+            <div className="mb-8">
+              <div className="bg-gradient-to-br from-[#1A1425] to-[#120E16] border border-[#2A2A2A] rounded-xl p-4 text-center">
+                <h2 className="text-xl font-bold text-white mb-2">
                   Start Supporting Artists
                 </h2>
-                <p className="text-[#9CA3AF] text-lg mb-6 max-w-2xl mx-auto">
+                <p className="text-[#9CA3AF] text-sm mb-4 max-w-md mx-auto">
                   Create a monthly micro-donation fund that automatically distributes to artists based on your listening time.
                 </p>
                 <PieCreateModal
@@ -226,103 +185,31 @@ const HomePage = () => {
                     <Button
                       onClick={() => trackNavigation(NavigationEvents.NAVIGATION_TO_CREATE_PIE, 'home_page')}
                       title="Create Micro-Donation Fund"
-                      className="bg-primary hover:bg-primaryLight text-white px-8 py-3 text-lg font-medium rounded-xl transition-all duration-200 hover:scale-105"
+                      className="bg-primary hover:bg-primaryLight text-white px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-105"
                     />
                   }
                 />
               </div>
             </div>
           ) : (
-            <div className="mb-12">
-              <div className="bg-gradient-to-br from-[#1A1425] to-[#120E16] border border-[#2A2A2A] rounded-2xl p-6 sm:p-8 text-center">
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+            <div className="mb-8">
+              <div className="bg-gradient-to-br from-[#1A1425] to-[#120E16] border border-[#2A2A2A] rounded-xl p-4 text-center">
+                <h2 className="text-xl font-bold text-white mb-2">
                   Connect Your Spotify Account
                 </h2>
-                <p className="text-[#9CA3AF] text-lg mb-6 max-w-2xl mx-auto">
+                <p className="text-[#9CA3AF] text-sm mb-4 max-w-md mx-auto">
                   Link your Spotify account to start tracking your listening patterns and supporting artists through micro-donations.
                 </p>
                 <button
-                  className="bg-[#1DB954] hover:bg-[#1ed760] text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 flex items-center justify-center gap-3 mx-auto"
+                  className="bg-[#1DB954] hover:bg-[#1ed760] text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 mx-auto text-sm"
                   onClick={handleSpotifyConnect}
                 >
-                  <SpotifyLogoSmall width={24} height={24} />
-                  <span className="text-lg">Connect Spotify</span>
+                  <SpotifyLogoSmall width={20} height={20} />
+                  <span>Connect Spotify</span>
                 </button>
               </div>
             </div>
           )}
-
-          {/* Recent Artists Section */}
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold text-white mb-6">
-              Recently Listened Artists
-            </h2>
-
-            {isArtistsLoading && (
-              <div className="bg-[#120E16] border border-[#2A2A2A] rounded-xl p-8 text-center">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="w-8 h-8 border-2 border-[#8B5CF6] border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-white">Loading your recent artists...</p>
-                </div>
-              </div>
-            )}
-
-            {!isArtistsLoading && !artistsData.length && (
-              <div className="bg-[#120E16] border border-[#2A2A2A] rounded-xl p-8 text-center">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="bg-[#2A2A2A] rounded-full p-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-8 w-8 text-[#808191]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-white text-lg font-semibold">No Artists Yet</h3>
-                  <p className="text-[#808191] max-w-md">
-                    Connect your Spotify account and start listening to see your recently listened artists here.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {!isArtistsLoading && artistsData.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-                {artistsData.slice(0, visibleArtists).map((artist, index) => (
-                  <NavLink key={index} className="block group" to={`/artist/${artist._id}`}>
-                    <div className="bg-[#120E16] border border-[#2A2A2A] rounded-xl p-4 transition-all duration-200 hover:bg-[#1A1425] hover:border-[#8B5CF6] hover:scale-105 h-full">
-                      <div className="aspect-square mb-3 rounded-lg overflow-hidden bg-[#2A2A2A]">
-                        <img
-                          src={artist.image || noArtistImage}
-                          alt={`${artist.name}'s profile`}
-                          className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
-                          onError={(e) => {
-                            e.currentTarget.src = noArtistImage;
-                          }}
-                        />
-                      </div>
-                      <div className="text-center">
-                        <div className="text-white font-medium text-sm truncate mb-1">
-                          {artist.name}
-                        </div>
-                        <div className="text-[#808191] text-xs">
-                          {formatTimeAgo(artist.last_listened)}
-                        </div>
-                      </div>
-                    </div>
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
 
           {/* Recent Tracks Section */}
           <div className="mb-8">

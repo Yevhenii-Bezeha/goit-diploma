@@ -1,7 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { useFanForgotPasswordMutation } from '../../redux/userFan/fanAuthApi';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { isMobileDevice } from '../../utils/deviceDetection';
 import { NavLink } from 'react-router-dom';
@@ -9,14 +6,9 @@ import { trackBusinessEvent, BusinessEvents } from '../../utils/analytics';
 import Spotify from '../../assets/icons/spotify.svg';
 
 const LoginPage = () => {
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [isSpotifyLoading, setIsSpotifyLoading] = useState(false);
 
-  const [forgotPassword, { isLoading: isForgotPasswordLoading, error: forgotPasswordError }] =
-    useFanForgotPasswordMutation();
-  const forgotError = forgotPasswordError as FetchBaseQueryError;
   const { executeRecaptcha } = useGoogleReCaptcha();
-  const navigate = useNavigate();
 
   const onSpotifyLogin = async () => {
     try {

@@ -2,7 +2,6 @@ import { Modal } from '../../../shared/Modal';
 import classnames from 'classnames';
 import { useState } from 'react';
 import { useCreateCheckoutSessionMutation, useGetUserQuery } from '../../../../redux/userFan';
-import { useGetFanWalletBalanceQuery } from '../../../../redux/userFan/fanWalletApi';
 import { useUncontrolled } from '@mantine/hooks';
 import { trackBusinessEvent, BusinessEvents, trackButtonClick, ButtonClickEvents } from '../../../../utils/analytics';
 
@@ -21,15 +20,8 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
   const [selectedTop, setSelectedTop] = useState<number>(50);
 
   const { data: userData } = useGetUserQuery();
-  const { data: walletData } = useGetFanWalletBalanceQuery();
   const [createCheckoutSession, { isLoading: isCreatingPie }] = useCreateCheckoutSessionMutation();
 
-  // Check if user is admin
-  const isAdmin = userData?.data?.email?.endsWith('@mypie.app') || false;
-
-  // Get wallet balance
-  const walletBalance = walletData?.data?.balance || 0;
-  const totalPieAmount = walletBalance + amount;
 
   const handleRewardTopToggle = () => {
     setIsRewardTopOnly((prev) => {
@@ -132,20 +124,6 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
               +
             </button>
           </div>
-
-          {/* Simple Wallet Balance Display */}
-          {walletBalance > 0 && (
-            <div className="mt-6 p-4 bg-[#1E152C] rounded-lg border border-[#8B5CF6]/20">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[#A78BFA] text-sm">Wallet Balance:</span>
-                <span className="text-[#A78BFA] font-bold">${walletBalance.toFixed(2)}</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">Total for artists:</span>
-                <span className="text-[#4ADE80] font-bold">${totalPieAmount.toFixed(2)}</span>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Simple Distribution Options */}
@@ -170,8 +148,8 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
                   key={top}
                   onClick={() => handleTopChange(top)}
                   className={`px-3 py-1 text-sm rounded transition-colors ${selectedTop === top
-                      ? 'bg-[#8B5CF6] text-white'
-                      : 'bg-[#23193A] text-[#A78BFA] hover:bg-[#8B5CF6]/20'
+                    ? 'bg-[#8B5CF6] text-white'
+                    : 'bg-[#23193A] text-[#A78BFA] hover:bg-[#8B5CF6]/20'
                     }`}
                 >
                   Top {top}
