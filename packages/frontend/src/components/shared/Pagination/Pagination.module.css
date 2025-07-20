@@ -1,0 +1,27 @@
+.container {
+  :global(.page-item .page-link) {
+    position: relative;
+    display: block;
+    margin: 0 2px;
+    border-radius: 5px;
+    text-align: center;
+    @apply text-primaryLightText bg-primaryButtonDark;
+    text-decoration: none;
+    border: none;
+  }
+
+  :global(.page-item a.page-link:hover) {
+    @apply bg-primary text-white;
+  }
+
+  :global(.page-item.active .page-link) {
+    @apply bg-primary text-white;
+    font-weight: 700;
+  }
+
+  :global(.page-item.disabled .page-link) {
+    pointer-events: none;
+    cursor: auto;
+    @apply text-primaryLightText bg-greyText;
+  }
+}

@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.iconList {
+  display: flex;
+  list-style: none;
+  gap: 16px 32px;
+}
+
+.iconItem {
+  display: flex;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s;
+  @apply fill-greenLight;
+}
+
+.icon:hover {
+  transform: scale(1.2);
+  @apply fill-primaryLightText;
+}

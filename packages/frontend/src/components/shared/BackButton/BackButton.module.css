@@ -1,0 +1,8 @@
+.icon {
+  @apply stroke-primary;
+  opacity: 0.56;
+
+  &:hover {
+    opacity: 1;
+  }
+}

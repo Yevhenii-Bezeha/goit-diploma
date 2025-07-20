@@ -1,0 +1,26 @@
+.button {
+  box-shadow: 0 7px 30px -10px theme('colors.primaryLight.DEFAULT');
+  background: #8B5CF6;
+  font-size: 14px;
+  font-weight: 600;
+  color: theme('colors.greyText.DEFAULT');
+  text-align: center;
+  line-height: 1;
+  border-radius: 5px;
+  padding: 12px 24px;
+  opacity: 1;
+  transition: background 200ms;
+  cursor: pointer;
+  place-self: center end;
+  min-height: 24px;
+  height: 38px;
+
+  &:hover {
+    @apply bg-[#8B5CF6]/70;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    background-color: #8B5CF6;
+  }
+}

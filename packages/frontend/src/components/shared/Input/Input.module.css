@@ -1,0 +1,25 @@
+.input {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(131, 100, 165);
+  padding-top: 1px;
+  padding-left: 14px;
+  opacity: 1;
+  align-self: flex-start;
+  width: 100%;
+  flex-grow: 1;
+  height: 38px;
+  @apply bg-cardBackground border-primaryButtonDark;
+
+  &:hover,
+  &:focus {
+    outline: transparent;
+  }
+}
+
+.input::placeholder {
+  color: rgb(154, 139, 170);
+}
