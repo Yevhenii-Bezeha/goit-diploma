@@ -1,0 +1,31 @@
+.container {
+  flex-grow: 2;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  background-color: theme(colors.greenButton.DEFAULT);
+  color: theme(colors.white.DEFAULT);
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+
+  &:disabled {
+    background-color: theme(colors.greenButton.DEFAULT);
+    opacity: 0.5;
+  }
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  fill: white;
+  margin-right: 20px;
+}
