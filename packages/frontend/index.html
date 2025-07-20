@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.jpeg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap"
+    rel="stylesheet">
+  <title>StreamSupport</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#a456fb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="StreamSupport" />
+  <meta name="description"
+    content="Revolutionary Spotify-integrated platform that empowers music fans to support artists through automatic, listening-based monthly budget distribution" />
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Apple Touch Icons for iOS PWA -->
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.svg" />
+  <link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.svg" />
+  <link rel="apple-touch-icon" sizes="128x128" href="/icons/icon-128x128.svg" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.svg" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
+  <link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.svg" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png" />
+
+  <!-- Microsoft Tiles -->
+  <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+  <meta name="msapplication-TileColor" content="#a456fb" />
+
+  <!-- iOS Safari PWA optimization -->
+  <meta name="apple-touch-fullscreen" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+
+
+
+  <style>
+    /* Loading spinner styles */
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #121212;
+      /* Background color */
+      z-index: 9999;
+      /* Ensure it is on top */
+    }
+
+    .spinner {
+      border: 8px solid rgba(255, 255, 255, 0.3);
+      border-top: 8px solid rgba(164, 86, 251, 1);
+      /* Updated to your specified color */
+      border-radius: 50%;
+      width: 50px;
+      /* Default size */
+      height: 50px;
+      /* Default size */
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      .spinner {
+        width: 40px;
+        /* Smaller size for mobile */
+        height: 40px;
+        /* Smaller size for mobile */
+        border-width: 6px;
+        /* Slightly thinner border for better visibility */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loading">
+    <div class="spinner"></div>
+  </div>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+  <script>
+    // Ensure spinner is displayed for a minimum time and handle both mobile and desktop
+    document.addEventListener('DOMContentLoaded', function () {
+      const loadingElement = document.getElementById('loading');
+      const minDisplayTime = 800; // Minimum time to show spinner in milliseconds
+      const startTime = Date.now();
+
+      // Function to hide the spinner
+      function hideSpinner() {
+        const elapsedTime = Date.now() - startTime;
+        if (elapsedTime >= minDisplayTime) {
+          if (loadingElement) {
+            loadingElement.style.display = 'none';
+          }
+        } else {
+          // If minimum time hasn't elapsed, wait the remaining time
+          setTimeout(hideSpinner, minDisplayTime - elapsedTime);
+        }
+      }
+
+      // Hide spinner when page is fully loaded
+      window.addEventListener('load', hideSpinner);
+
+      // Fallback: hide spinner after a timeout even if load event doesn't fire
+      setTimeout(hideSpinner, 5000);
+    });
+  </script>
+</body>
+
+</html>

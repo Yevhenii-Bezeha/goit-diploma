@@ -1,0 +1,28 @@
+{
+  "name": "mypie",
+  "version": "1.0.0",
+  "description": "StreamSupport - Artist support platform",
+  "private": true,
+  "scripts": {
+    "dev:be": "cd packages/backend && npm run dev",
+    "dev:fe": "cd packages/frontend && npm run dev",
+    "dev:all:mac": "concurrently \"npm run dev:be\" \"npm run dev:fe\" \"npm run dev:stripe:mac\" \"npm run dev:stripe-connect:mac\"",
+    "install:all": "npm run install:be && npm run install:fe",
+    "build:be": "cd packages/backend && npm run build",
+    "build:fe": "cd packages/frontend && npm run build",
+    "build:all": "npm run build:be && npm run build:fe",
+    "test:be": "cd packages/backend && npm test",
+    "test:all": "npm run test:be"
+  },
+  "keywords": [
+    "spotify",
+    "music",
+    "artists"
+  ],
+  "author": "StreamSupport Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "vite-plugin-svgr": "^4.3.0"
+  }
+}

@@ -1,0 +1,182 @@
+# StreamSupport Development Rules
+
+## Project Context
+
+StreamSupport is a revolutionary Spotify-integrated platform that empowers music fans to support artists through automatic, listening-based monthly budget distribution. The platform bypasses Spotify's pro-rata model by distributing "PIE-MONEY" directly to artists based on individual fan listening patterns using "LISTEN-TIME-FACTOR" calculations.
+
+## Development Philosophy
+
+- **Business-First**: All technical decisions should align with StreamSupport's mission of fair artist compensation
+- **User-Centric**: Prioritize fan experience (effortless giving) and artist experience (fair earnings)
+- **Quality over Speed**: Robust, well-tested code that handles real money transactions
+- **Transparency**: Clear data flow and payment tracking for all stakeholders
+
+## User Preferences & Workflow
+
+### Linter & Code Quality
+
+- **DO NOT** automatically fix linter issues - user prefers to handle manually
+- **DO NOT** suggest linter fixes unless explicitly asked
+- **DO** mention if there are linting errors but let user decide how to handle
+- **DO** focus on functional correctness over style consistency
+
+### Communication Style
+
+- **DO** provide comprehensive explanations rather than minimal summaries
+- **DO** explain business context when relevant to technical decisions
+- **DO** be explicit about what you're doing and why
+- **DO** mention potential implications of changes
+
+### Code Generation Preferences
+
+- **DO** generate complete, runnable code with all necessary imports
+- **DO** include proper TypeScript types and interfaces
+- **DO** add meaningful comments for complex business logic
+- **DO** consider error handling and edge cases
+- **DO NOT** generate placeholder code or TODOs unless specifically requested
+
+## Architecture Guidelines
+
+### Monorepo Structure
+
+```
+StreamSupport/
+├── packages/
+│   ├── frontend/    # React/TypeScript SPA with Vite
+│   └── backend/     # Express/TypeScript API
+```
+
+### Frontend Patterns
+
+- **Framework**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS (utility-first approach)
+- **State**: Redux Toolkit with separate slices (admin, userArtist, userFan)
+- **Routing**: React Router v6 with protected routes
+- **Forms**: Formik + Yup validation
+- **Charts**: Chart.js, React ChartJS 2, Recharts for data visualization
+- **Components**: Organized by user type with shared components for common UI
+
+### Backend Patterns
+
+- **Framework**: Express.js + TypeScript
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT with bcrypt password hashing
+- **Validation**: Joi schemas for request validation
+- **Payments**: Stripe integration for PIE budgets and artist payouts
+- **External APIs**: Spotify Web API for listening data
+- **Background Jobs**: Node-cron for monthly PIE distribution
+
+### Key Business Logic Components
+
+- **PIE-MONEY**: Monthly budget fans allocate for artist support
+- **LISTEN-TIME-FACTOR**: Algorithm calculating artist payment share based on listening duration
+- **Artist Verification**: Multi-step claim process with identity verification
+- **Automatic Distribution**: End-of-month payment processing based on listening data
+
+## Development Best Practices
+
+### TypeScript Guidelines
+
+- **Use strict mode** with comprehensive type safety
+- **Define interfaces** for all data structures, especially business entities
+- **Avoid any types** - be explicit with types, especially for Spotify/Stripe data
+- **Use enums** for status fields (verification status, payment status, etc.)
+
+### API Design
+
+- **RESTful patterns** with clear resource organization
+- **Consistent error responses** with proper HTTP status codes
+- **Input validation** using Joi schemas
+- **Rate limiting** for external API calls (Spotify, Stripe)
+- **Comprehensive logging** for financial transactions
+
+### Security Considerations
+
+- **JWT authentication** with secure token management
+- **CORS protection** with proper origin validation
+- **Input sanitization** for all user inputs
+- **Secure cookie handling** for session management
+- **Audit trails** for all financial operations
+
+### External API Integration
+
+- **Spotify API**: OAuth 2.0 flow, listening data collection, rate limiting
+- **Stripe API**: Customer management, subscription handling, webhook processing
+- **Error handling**: Graceful degradation when external services are unavailable
+- **Data consistency**: Proper handling of eventual consistency with external data
+
+## Testing Strategy
+
+- **Unit tests** for business logic, especially PIE distribution calculations
+- **Integration tests** for API endpoints and external service interactions
+- **E2E tests** for critical user flows (PIE setup, artist claiming, payment processing)
+- **Mock external APIs** (Spotify, Stripe) for reliable testing
+
+## Performance Considerations
+
+- **Lazy loading** for React components to optimize bundle size
+- **Database indexing** for efficient queries on listening data
+- **Caching strategies** for frequently accessed data
+- **Background processing** for heavy calculations (monthly distributions)
+
+## Error Handling Patterns
+
+- **User-friendly errors** that don't expose internal details
+- **Comprehensive logging** for debugging and audit purposes
+- **Graceful degradation** when external services are unavailable
+- **Financial error handling** with special attention to payment failures
+
+## Deployment & Environment
+
+- **Azure Container Apps** for production deployment
+- **Docker containers** for both frontend and backend
+- **Environment variables** for configuration (never hardcode secrets)
+- **Application Insights** for monitoring and error tracking
+
+## Code Organization Principles
+
+### Component Structure (Frontend)
+
+```
+src/components/
+├── admin/           # Administrative interface
+├── shared/          # Reusable UI components
+├── userArtist/      # Artist-specific components
+└── userFan/         # Fan-specific components
+```
+
+### API Organization (Backend)
+
+```
+src/routes/
+├── auth/            # Fan authentication
+├── for-artists/     # Artist operations
+├── admin/           # Administrative functions
+└── webhook/         # External service callbacks
+```
+
+## Business Logic Priorities
+
+1. **Accurate PIE Distribution**: Ensure LISTEN-TIME-FACTOR calculations are precise
+2. **Secure Payment Processing**: Handle all financial transactions with extreme care
+3. **Artist Verification**: Robust identity verification to prevent fraud
+4. **Spotify Integration**: Reliable listening data collection and processing
+5. **User Experience**: Intuitive interfaces for both fans and artists
+
+## When Working on StreamSupport Code
+
+- **Always consider** the financial implications of changes
+- **Test thoroughly** any payment-related functionality
+- **Document business logic** clearly for future developers
+- **Consider scale** - the platform should handle thousands of users and transactions
+- **Maintain audit trails** for all important operations
+- **Keep user data privacy** in mind, especially Spotify listening data
+
+## AI Assistant Guidelines
+
+- **Read the memory bank** at the start of each session to understand current context
+- **Focus on business value** when suggesting technical solutions
+- **Be explicit** about changes that could affect payments or user data
+- **Consider implications** of suggestions on the overall user experience
+- **Respect user preferences** regarding code style and development workflow
+- **Provide complete solutions** rather than partial implementations
