@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logoSvg from '../assets/icons/logo.svg?url';
 
 const ArtistTermsPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -34,12 +33,24 @@ const ArtistTermsPage = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <img
-              src={logoSvg}
-              alt="Listener-Driven Micro-Donations"
-              className="h-8 w-auto"
-              style={{ filter: 'brightness(0) saturate(100%)' }}
-            />
+            {/* Research Icon */}
+            <div className="h-8 w-8 bg-purple-500 rounded-lg flex items-center justify-center">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-white"
+              >
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
             <span className="text-xl font-semibold text-gray-900">Artist Research Terms</span>
           </div>
           <div className="text-sm text-gray-600">
