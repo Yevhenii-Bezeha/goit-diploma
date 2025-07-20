@@ -6,6 +6,8 @@
   "scripts": {
     "dev:be": "cd packages/backend && npm run dev",
     "dev:fe": "cd packages/frontend && npm run dev",
+    "dev:stripe:mac": "stripe listen --events=\"customer.subscription.deleted,customer.subscription.updated,invoice.upcoming,invoice.paid,invoice.finalized,invoice.updated,payment_intent.succeeded,payment_intent.created,billing_portal.session.created\" --forward-to localhost:3000/api/webhook/stripe/checkoutCompleted",
+    "dev:stripe-connect:mac": "stripe listen --events=\"account.updated,account.application.authorized,account.application.deauthorized,account.external_account.created,account.external_account.deleted,account.external_account.updated,capability.updated,payout.created,payout.failed,payout.paid,payout.updated,person.updated,person.created,file.created\" --forward-to localhost:3000/api/webhook/stripe/connect",
     "dev:all:mac": "concurrently \"npm run dev:be\" \"npm run dev:fe\" \"npm run dev:stripe:mac\" \"npm run dev:stripe-connect:mac\"",
     "install:all": "npm run install:be && npm run install:fe",
     "build:be": "cd packages/backend && npm run build",

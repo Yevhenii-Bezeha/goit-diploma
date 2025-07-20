@@ -11,8 +11,6 @@ import { TracksList } from '../../components/userFan';
 import { Button } from '../../components/shared';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import SpotifyLogoSmall from '../../assets/icons/spotify.svg';
-import SpotifyFullLogo from '../../assets/icons/spotifyFullLogo.svg';
-import PieLogo from '../../assets/icons/logo-pie.svg';
 import noArtistImage from '../../assets/image/no-artist-image.png';
 import ReactAvatar from 'react-avatar';
 import {
@@ -66,7 +64,6 @@ const PieVisual: React.FC<{ amount: number; className?: string }> = ({ amount, c
   return (
     <div className={`relative ${className}`}>
       <div className="relative w-full h-full">
-        <PieLogo className="w-full h-full" />
 
         {/* User Avatar in Center */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -208,7 +205,7 @@ const HomePage = () => {
                         trackNavigation(NavigationEvents.NAVIGATION_TO_CREATE_PIE, 'dashboard');
                         navigate('/pie');
                       }}
-                      title="Manage Your Fund"
+                      title="Go to Pie"
                       className="bg-primary hover:bg-primaryLight text-white px-8 py-3 text-lg font-medium rounded-xl transition-all duration-200 hover:scale-105"
                     />
                   </div>

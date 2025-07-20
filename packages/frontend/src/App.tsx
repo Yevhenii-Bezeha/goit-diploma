@@ -6,7 +6,6 @@ import { hasSetCookiePreferences } from './utils/cookieTypes';
 import { GlobalErrorBoundary } from './components/shared/ErrorBoundary/ErrorBoundary';
 
 // Lazy loaded components
-const ProfileUpdateContainer = lazy(() => import('./components/userArtist/ProfileUpdateContainer.tsx'));
 const Home = lazy(() => import('./pages/userFan/HomePage.tsx'));
 const PrivateRoutesArtist = lazy(() => import('./pages/userArtist/PrivateRoutesArtist.tsx'));
 const PiePage = lazy(() => import('./pages/userFan/PiePage.tsx'));
@@ -26,6 +25,7 @@ const CookieBanner = lazy(() =>
 const PWAInstallPrompt = lazy(() =>
   import('./components/shared/PWAInstallPrompt/PWAInstallPrompt').then((module) => ({ default: module.default }))
 );
+const CompleteRegistration = lazy(() => import('./pages/userArtist/CompleteRegistration'));
 
 // Error page
 const ErrorPage = lazy(() => import('./pages/ErrorPage'));
@@ -122,6 +122,7 @@ const router = createBrowserRouter([
     ),
   },
 
+
   // Artists routes
   {
     path: '/for-artists',
@@ -142,6 +143,15 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <ArtistLoginPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'complete-registration',
+        errorElement: <ErrorPage title="Something went wrong" />,
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <CompleteRegistration />
           </Suspense>
         ),
       },
@@ -174,14 +184,6 @@ const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<div>Loading...</div>}>
                     <ArtistFundPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: 'profile/update',
-                element: (
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <ProfileUpdateContainer />
                   </Suspense>
                 ),
               },

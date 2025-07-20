@@ -1,13 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store/store';
 
 import { MainCard } from '../../components/userFan';
 import { PieArtistsList } from '../../components/userFan/PieArtistsList/PieArtistsList';
 import { PieCreateModal } from '../../components/userFan/modals/PieCreateModal/PieCreateModal';
-import PieLogo from '../../assets/icons/logo-pie.svg';
-import SpotifyLogoSmall from '../../assets/icons/spotify.svg';
 import {
   useGetPieActiveQuery,
   useGetPieArtistsQuery,
@@ -22,7 +18,6 @@ import ReactAvatar from 'react-avatar';
 import { useGetUserQuery } from '../../redux/userFan';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { trackButtonClick, trackBusinessEvent, BusinessEvents, ButtonClickEvents } from '../../utils/analytics';
-import { msToTime } from '../../utils';
 
 const calculatePieTime = (startDate: string) => {
   const start = new Date(startDate);

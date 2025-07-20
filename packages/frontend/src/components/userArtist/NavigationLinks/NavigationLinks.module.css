@@ -1,0 +1,16 @@
+.link {
+  min-height: 40px;
+  width: 72px;
+  height: 57px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-direction: column;
+
+  &:hover,
+  &.active {
+    @apply bg-primary;
+  }
+}
