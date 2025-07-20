@@ -1,5 +1,5 @@
 import { Button } from '../../components/shared';
-import { trackButtonClick, ButtonClickEvents } from '../../utils/analytics';
+
 
 const IndexPage = () => {
   const handleNavigation = (path: string) => {
@@ -12,7 +12,6 @@ const IndexPage = () => {
       <header className="p-6 flex justify-end space-x-4">
         <Button
           onClick={() => {
-            trackButtonClick(ButtonClickEvents.OPEN_MOBILE_MENU, 'index_page');
             handleNavigation('/for-artists');
           }}
           title="I am an artist"
@@ -20,7 +19,6 @@ const IndexPage = () => {
         />
         <Button
           onClick={() => {
-            trackButtonClick(ButtonClickEvents.OPEN_MOBILE_MENU, 'index_page');
             handleNavigation('/login');
           }}
           title="Login"
@@ -87,7 +85,6 @@ const IndexPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={() => {
-                  trackButtonClick(ButtonClickEvents.OPEN_MOBILE_MENU, 'index_page');
                   handleNavigation('/login');
                 }}
                 title="Start Listening & Supporting"

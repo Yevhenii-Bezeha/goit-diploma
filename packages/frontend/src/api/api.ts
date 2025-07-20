@@ -13,13 +13,11 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Only handle 401s that occur during an active session (not during login/registration attempts)
     const isAuthEndpoint = error.config?.url?.includes('/auth/') || false;
     const isLoginAttempt =
       isAuthEndpoint && (error.config?.url?.includes('/login') || error.config?.url?.includes('/register'));
 
     if (error.response?.status === 401 && !isLoginAttempt) {
-      // Check which token exists before removing
       const hasFanToken = !!getCookie(CookieName.ACCESS_TOKEN_FAN);
       const hasArtistToken = !!getCookie(CookieName.ACCESS_TOKEN_ARTIST);
 
@@ -32,10 +30,8 @@ api.interceptors.response.use(
       }
 
       if (window.location.pathname.includes('/for-artists')) {
-        // Redirect to artist login
         window.location.href = '/for-artists';
       } else {
-        // Redirect to fan login
         window.location.href = '/login';
       }
     }
@@ -52,25 +48,25 @@ const axiosBaseQuery =
     params?: AxiosRequestConfig['params'];
     withCredentials?: boolean;
   }> =>
-  async ({ url, method = 'GET', data, params, withCredentials = true }) => {
-    try {
-      const result = await api({
-        url,
-        method,
-        data,
-        params,
-        withCredentials: withCredentials,
-      });
-      return { data: result.data };
-    } catch (axiosError) {
-      const err = axiosError as AxiosError;
-      return {
-        error: {
-          status: err.response?.status,
-          data: err.response?.data || err.message,
-        },
-      };
-    }
-  };
+    async ({ url, method = 'GET', data, params, withCredentials = true }) => {
+      try {
+        const result = await api({
+          url,
+          method,
+          data,
+          params,
+          withCredentials: withCredentials,
+        });
+        return { data: result.data };
+      } catch (axiosError) {
+        const err = axiosError as AxiosError;
+        return {
+          error: {
+            status: err.response?.status,
+            data: err.response?.data || err.message,
+          },
+        };
+      }
+    };
 
 export default axiosBaseQuery;

@@ -4,7 +4,7 @@ import { useGetUserArtistQuery, useGetOfficesQuery, Office, useCreateOfficeMutat
 import Close from '../../../assets/icons/close.svg';
 import classnames from 'classnames';
 import { useEffect, useState } from 'react';
-import { trackButtonClick, trackBusinessEvent, BusinessEvents, ButtonClickEvents } from '../../../utils/analytics';
+
 import Artist from '../../../assets/icons/artist.svg';
 import Funds from '../../../assets/icons/funds.svg';
 import ReactAvatar from 'react-avatar';
@@ -36,8 +36,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
-      // Track when the mobile menu is opened
-      trackButtonClick(ButtonClickEvents.OPEN_MOBILE_MENU, 'artist_navigation');
     } else {
       document.body.style.overflow = '';
     }
@@ -47,17 +45,12 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
   }, [open]);
 
   const handleLogout = () => {
-    // Track logout action
-    trackBusinessEvent(BusinessEvents.LOGOUT);
-
     Cookies.remove('mypie_access_token_artist');
     window.location.href = '/for-artists';
   };
 
-  // Get user's name or use a fallback
   const userName = userData ? `${userData.first_name} ${userData.last_name}` : '';
 
-  // Simplified navigation items - only funds and artists
   const navigationItems = [
     {
       title: 'Artists',
@@ -77,7 +70,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
   };
 
   const handleCreateOfficeClick = () => {
-    // Check if user profile is complete before allowing office creation
     if (!isProfileComplete) {
       setOfficeError(
         'You need to complete your profile before creating an office. Please update your profile with your full name, phone number, and country information.'
@@ -108,12 +100,9 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
     try {
       const newOffice = await createOffice({ name: newOfficeName.trim() }).unwrap();
 
-      trackBusinessEvent(BusinessEvents.OFFICE_CREATED);
-
       setShowCreateOfficeModal(false);
       setNewOfficeName('');
 
-      // Select the newly created office
       dispatch(setSelectedOffice(newOffice));
     } catch (error: any) {
       console.error('Failed to create office:', error);
@@ -128,7 +117,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
         open ? 'visible opacity-100' : 'invisible opacity-0 pointer-events-none'
       )}
     >
-      {/* Overlay background */}
       <div
         className={classnames(
           'fixed inset-0 h-screen bg-black/50 transition-opacity duration-300 z-50',
@@ -136,7 +124,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
         )}
         onClick={onClose}
       />
-      {/* Slide-in panel with gradient background */}
       <div
         className={classnames(
           'fixed top-0 left-0 h-screen w-80 shadow-2xl flex flex-col transition-transform duration-300 z-[1000]',
@@ -146,7 +133,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
           background: 'linear-gradient(to bottom, #834DF8, #6B21A8)'
         }}
       >
-        {/* Header with logo */}
         <div className="flex items-center justify-between p-4 border-b border-purple-500/30">
           <div className="flex items-center">
             <div className="h-8 w-8 bg-white rounded flex items-center justify-center">
@@ -166,7 +152,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
           </button>
         </div>
 
-        {/* Office Dropdown */}
         <div className="mt-4 mx-4 mb-6">
           <div className="relative">
             <button
@@ -217,7 +202,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
           </div>
         </div>
 
-        {/* Navigation Items */}
         <div className="flex-1 px-4">
           <div className="space-y-2">
             {navigationItems.map((item, index) => (
@@ -242,7 +226,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
           </div>
         </div>
 
-        {/* User info at bottom - simplified with only logout */}
         {userData && (
           <div className="p-4 border-t border-purple-500/30 space-y-2">
             <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: 'rgba(131, 77, 248, 0.3)' }}>
@@ -290,7 +273,6 @@ export const ArtistMobileNavOverlay = ({ open, onClose }: ArtistMobileNavOverlay
         )}
       </div>
 
-      {/* Create Office Modal */}
       <Modal
         value={showCreateOfficeModal}
         onClose={() => {

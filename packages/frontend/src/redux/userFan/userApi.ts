@@ -17,7 +17,6 @@ type UserType = {
     updatedAt: string;
     __v: number;
     access_token?: string;
-    refresh_token?: string;
     spotify_email?: string;
     spotify_id?: string;
     spotify_user_name?: string;
@@ -25,6 +24,15 @@ type UserType = {
     is_public?: boolean;
     wallet?: number;
     last_successful_fetch_date?: string | null;
+    linked_accounts?: Array<{
+      provider: string;
+      provider_id: string;
+      provider_email?: string;
+      provider_name?: string;
+      access_token?: string;
+      refresh_token?: string;
+      connected_at: string;
+    }>;
   };
 };
 

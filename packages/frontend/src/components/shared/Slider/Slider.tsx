@@ -22,7 +22,6 @@ export const Slider = ({
   checkpoints = [-100, -67, -33, 0, 33, 67, 100],
   className,
 }: SliderProps) => {
-  // Function to find nearest checkpoint
   const findNearestCheckpoint = (inputValue: number) => {
     let closest = checkpoints[0];
     let minDiff = Math.abs(inputValue - closest);
@@ -38,13 +37,12 @@ export const Slider = ({
     return closest;
   };
 
-  // Ensure initial value snaps to checkpoint
   useEffect(() => {
     const nearest = findNearestCheckpoint(value);
     if (nearest !== value) {
       onChange(nearest);
     }
-  }, []); // Empty dependency array since we only want this on mount
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = Number(event.target.value);
@@ -56,20 +54,16 @@ export const Slider = ({
     onChange(checkpointValue);
   };
 
-  // Function to get checkpoint symbol and style based on position
   const getCheckpointSymbol = (index: number) => {
     if (index === 3) {
-      // Middle position (0)
       return { symbol: '0', fontSize: undefined };
     }
-    // Left side: 0, 1, 2; Right side: 4, 5, 6
     let fontSize = '12px';
     if (index === 1 || index === 5) fontSize = '16px';
     if (index === 0 || index === 6) fontSize = '20px';
     return { symbol: '+', fontSize };
   };
 
-  // Calculate checkpoint positions as percentages
   const checkpointPositions = useMemo(() => {
     return checkpoints.map((point) => ({
       value: point,

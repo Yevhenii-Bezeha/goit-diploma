@@ -9,7 +9,6 @@ export const FooterNavigation = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Only show on scroll up
       if (currentScrollY < lastScrollY.current) {
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY.current) {

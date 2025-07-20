@@ -1,13 +1,12 @@
 import Cookies from 'js-cookie';
 import { CookieType, CookiePreferences, getDefaultPreferences } from './cookieTypes';
 
-// Cookie names used in the application
 export enum CookieName {
-  ACCESS_TOKEN_FAN = 'mypie_access_token_fan',
-  ACCESS_TOKEN_ARTIST = 'mypie_access_token_artist',
-  ACCESS_TOKEN_ADMIN = 'mypie_access_token_admin',
-  SPOTIFY_AUTH = 'mypie_spotify_auth',
-  COOKIE_PREFERENCES = 'mypie_cookie_preferences',
+    ACCESS_TOKEN_FAN = 'mypie_access_token_fan',
+    ACCESS_TOKEN_ARTIST = 'mypie_access_token_artist',
+    ACCESS_TOKEN_ADMIN = 'mypie_access_token_admin',
+    SPOTIFY_AUTH = 'mypie_spotify_auth',
+    COOKIE_PREFERENCES = 'mypie_cookie_preferences',
 }
 
 // Cookie preference cookie name
@@ -15,11 +14,11 @@ const COOKIE_PREFERENCES_KEY = 'mypie_cookie_preferences';
 
 // Map cookies to their types
 const cookieTypeMap: Record<string, CookieType> = {
-  [CookieName.ACCESS_TOKEN_FAN]: CookieType.ESSENTIAL,
-  [CookieName.ACCESS_TOKEN_ARTIST]: CookieType.ESSENTIAL,
-  [CookieName.ACCESS_TOKEN_ADMIN]: CookieType.ESSENTIAL,
-  [CookieName.SPOTIFY_AUTH]: CookieType.PERFORMANCE,
-  [CookieName.COOKIE_PREFERENCES]: CookieType.ESSENTIAL,
+    [CookieName.ACCESS_TOKEN_FAN]: CookieType.ESSENTIAL,
+    [CookieName.ACCESS_TOKEN_ARTIST]: CookieType.ESSENTIAL,
+    [CookieName.ACCESS_TOKEN_ADMIN]: CookieType.ESSENTIAL,
+    [CookieName.SPOTIFY_AUTH]: CookieType.PERFORMANCE,
+    [CookieName.COOKIE_PREFERENCES]: CookieType.ESSENTIAL,
 };
 
 /**
@@ -28,24 +27,19 @@ const cookieTypeMap: Record<string, CookieType> = {
  * @returns boolean indicating if the cookie type is allowed
  */
 export const isCookieTypeAllowed = (type: CookieType): boolean => {
-  // Analytics is always allowed since we use Umami which is cookie-free
-  if (type === CookieType.ANALYTICS) {
-    return true;
-  }
+    const preferences = localStorage.getItem(COOKIE_PREFERENCES_KEY);
+    if (!preferences) {
+        // If no preferences are set, default to allowing only essential cookies
+        return type === CookieType.ESSENTIAL;
+    }
 
-  const preferences = localStorage.getItem(COOKIE_PREFERENCES_KEY);
-  if (!preferences) {
-    // If no preferences are set, default to allowing only essential cookies
-    return type === CookieType.ESSENTIAL;
-  }
-
-  try {
-    const parsedPreferences = JSON.parse(preferences);
-    return parsedPreferences[type] || type === CookieType.ESSENTIAL; // Always allow essential cookies
-  } catch (e) {
-    console.error('Error parsing cookie preferences', e);
-    return type === CookieType.ESSENTIAL; // Always allow essential cookies
-  }
+    try {
+        const parsedPreferences = JSON.parse(preferences);
+        return parsedPreferences[type] || type === CookieType.ESSENTIAL; // Always allow essential cookies
+    } catch (e) {
+        console.error('Error parsing cookie preferences', e);
+        return type === CookieType.ESSENTIAL; // Always allow essential cookies
+    }
 };
 
 /**
@@ -56,15 +50,15 @@ export const isCookieTypeAllowed = (type: CookieType): boolean => {
  * @returns boolean indicating if the cookie was set
  */
 export const setCookie = (name: string, value: string, options?: Cookies.CookieAttributes): boolean => {
-  const cookieType = cookieTypeMap[name] || CookieType.UNCLASSIFIED;
+    const cookieType = cookieTypeMap[name] || CookieType.UNCLASSIFIED;
 
-  // Check if this cookie type is allowed
-  if (isCookieTypeAllowed(cookieType)) {
-    Cookies.set(name, value, options);
-    return true;
-  }
+    // Check if this cookie type is allowed
+    if (isCookieTypeAllowed(cookieType)) {
+        Cookies.set(name, value, options);
+        return true;
+    }
 
-  return false;
+    return false;
 };
 
 /**
@@ -73,14 +67,14 @@ export const setCookie = (name: string, value: string, options?: Cookies.CookieA
  * @returns Cookie value or undefined
  */
 export const getCookie = (name: string): string | undefined => {
-  const cookieType = cookieTypeMap[name] || CookieType.UNCLASSIFIED;
+    const cookieType = cookieTypeMap[name] || CookieType.UNCLASSIFIED;
 
-  // Check if this cookie type is allowed
-  if (isCookieTypeAllowed(cookieType)) {
-    return Cookies.get(name);
-  }
+    // Check if this cookie type is allowed
+    if (isCookieTypeAllowed(cookieType)) {
+        return Cookies.get(name);
+    }
 
-  return undefined;
+    return undefined;
 };
 
 /**
@@ -89,7 +83,7 @@ export const getCookie = (name: string): string | undefined => {
  * @param options Cookie options
  */
 export const removeCookie = (name: string, options?: Cookies.CookieAttributes): void => {
-  Cookies.remove(name, options);
+    Cookies.remove(name, options);
 };
 
 /**
@@ -98,7 +92,7 @@ export const removeCookie = (name: string, options?: Cookies.CookieAttributes): 
  * @param type Cookie type
  */
 export const registerCookie = (name: string, type: CookieType): void => {
-  cookieTypeMap[name] = type;
+    cookieTypeMap[name] = type;
 };
 
 /**
@@ -106,26 +100,26 @@ export const registerCookie = (name: string, type: CookieType): void => {
  * This should be called when preferences change to apply new settings to existing cookies
  */
 export const applyCookiePreferences = (): void => {
-  // Get all cookies
-  const allCookies = Cookies.get();
+    // Get all cookies
+    const allCookies = Cookies.get();
 
-  // For each cookie, check if it should be kept or removed based on preferences
-  Object.keys(allCookies).forEach((name) => {
-    const cookieType = cookieTypeMap[name] || CookieType.UNCLASSIFIED;
+    // For each cookie, check if it should be kept or removed based on preferences
+    Object.keys(allCookies).forEach((name) => {
+        const cookieType = cookieTypeMap[name] || CookieType.UNCLASSIFIED;
 
-    // If cookie type is not allowed, remove it
-    if (!isCookieTypeAllowed(cookieType)) {
-      Cookies.remove(name);
-    } else {
-      // For essential cookies, make sure they have a long expiration
-      if (cookieType === CookieType.ESSENTIAL) {
-        const value = allCookies[name];
-        if (value) {
-          Cookies.set(name, value, { expires: 30 }); // 30 days
+        // If cookie type is not allowed, remove it
+        if (!isCookieTypeAllowed(cookieType)) {
+            Cookies.remove(name);
+        } else {
+            // For essential cookies, make sure they have a long expiration
+            if (cookieType === CookieType.ESSENTIAL) {
+                const value = allCookies[name];
+                if (value) {
+                    Cookies.set(name, value, { expires: 30 }); // 30 days
+                }
+            }
         }
-      }
-    }
-  });
+    });
 };
 
 /**
@@ -133,26 +127,25 @@ export const applyCookiePreferences = (): void => {
  * @returns Cookie preferences or default preferences if none are saved
  */
 export const loadCookiePreferences = (): CookiePreferences => {
-  const savedPreferences = localStorage.getItem(COOKIE_PREFERENCES_KEY);
-  if (savedPreferences) {
-    try {
-      const parsed = JSON.parse(savedPreferences);
-      // Ensure essential cookies and analytics are always enabled
-      // Analytics is always enabled because we use Umami which is cookie-free
-      return { ...parsed, [CookieType.ESSENTIAL]: true, [CookieType.ANALYTICS]: true };
-    } catch (e) {
-      console.error('Error parsing cookie preferences', e);
+    const savedPreferences = localStorage.getItem(COOKIE_PREFERENCES_KEY);
+    if (savedPreferences) {
+        try {
+            const parsed = JSON.parse(savedPreferences);
+            // Ensure essential cookies are always enabled
+            return { ...parsed, [CookieType.ESSENTIAL]: true };
+        } catch (e) {
+            console.error('Error parsing cookie preferences', e);
+        }
     }
-  }
 
-  return getDefaultPreferences();
+    return getDefaultPreferences();
 };
 
 /**
  * Check if we're in a production environment
  */
 export const isProduction = (): boolean => {
-  return window.location.hostname !== 'localhost';
+    return window.location.hostname !== 'localhost';
 };
 
 /**
@@ -160,19 +153,17 @@ export const isProduction = (): boolean => {
  * @param preferences Cookie preferences
  */
 export const saveCookiePreferences = (preferences: CookiePreferences): void => {
-  // Ensure essential cookies and analytics are always enabled
-  // Analytics is always enabled because we use Umami which is cookie-free
-  const finalPreferences = {
-    ...preferences,
-    [CookieType.ESSENTIAL]: true,
-    [CookieType.ANALYTICS]: true,
-  };
+    // Ensure essential cookies are always enabled
+    const finalPreferences = {
+        ...preferences,
+        [CookieType.ESSENTIAL]: true,
+    };
 
-  // Save to localStorage
-  localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(finalPreferences));
+    // Save to localStorage
+    localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(finalPreferences));
 
-  // Apply preferences to existing cookies
-  applyCookiePreferences();
+    // Apply preferences to existing cookies
+    applyCookiePreferences();
 };
 
 /**
@@ -180,6 +171,6 @@ export const saveCookiePreferences = (preferences: CookiePreferences): void => {
  * This should be called when the application starts
  */
 export const initCookieManager = (): void => {
-  // Apply cookie preferences to existing cookies
-  applyCookiePreferences();
+    // Apply cookie preferences to existing cookies
+    applyCookiePreferences();
 };

@@ -1,5 +1,3 @@
-// Simplified Sidebar for Diploma Version - Listener-Driven Micro-Donations
-// Focused on core artist functionality with office selection
 
 import { useState, useEffect, Fragment } from 'react';
 import classnames from 'classnames';
@@ -38,17 +36,14 @@ export const SidebarWithSections = ({ className }: SidebarType) => {
   const { data: offices, isLoading: officesLoading } = useGetOfficesQuery();
   const [createOffice, { isLoading: isCreatingOffice }] = useCreateOfficeMutation();
 
-  // Set first office as selected if none is selected yet
   useEffect(() => {
     if (!selectedOffice && offices && offices.length > 0) {
       dispatch(setSelectedOffice(offices[0]));
     } else if (offices && offices.length === 0) {
-      // Clear selected office if there are no offices
       dispatch(setSelectedOffice(null));
     }
   }, [offices, selectedOffice, dispatch]);
 
-  // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -61,7 +56,6 @@ export const SidebarWithSections = ({ className }: SidebarType) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  // Simplified menu items for diploma version - only funds and artists
   const menuItems = [
     { title: 'Artists', icon: <Artist fill={'white'} />, path: 'artists', isOfficeSpecific: true },
     { title: 'Funds', icon: <Funds />, path: 'funds', isOfficeSpecific: true },
@@ -78,7 +72,6 @@ export const SidebarWithSections = ({ className }: SidebarType) => {
   };
 
   const handleCreateOfficeClick = () => {
-    // Check if user profile is complete before allowing office creation
     if (!isProfileComplete) {
       setOfficeError(
         'You need to complete your profile before creating an office. Please update your profile with your full name, phone number, and country information.'

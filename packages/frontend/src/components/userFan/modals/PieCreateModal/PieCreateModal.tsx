@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { useState } from 'react';
 import { useCreateCheckoutSessionMutation, useGetUserQuery } from '../../../../redux/userFan';
 import { useUncontrolled } from '@mantine/hooks';
-import { trackBusinessEvent, BusinessEvents, trackButtonClick, ButtonClickEvents } from '../../../../utils/analytics';
+
 
 type PieCreateModalProps = {
   className?: string;
@@ -15,13 +15,10 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
   const [isOpen, setIsOpen] = useUncontrolled({ defaultValue: false });
   const [amountError, setAmountError] = useState<string>('');
 
-  // Simplified settings - only essential options
   const [isRewardTopOnly, setIsRewardTopOnly] = useState(false);
   const [selectedTop, setSelectedTop] = useState<number>(50);
 
-  const { data: userData } = useGetUserQuery();
   const [createCheckoutSession, { isLoading: isCreatingPie }] = useCreateCheckoutSessionMutation();
-
 
   const handleRewardTopToggle = () => {
     setIsRewardTopOnly((prev) => {
@@ -29,14 +26,12 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
       if (newValue) {
         setSelectedTop(50);
       }
-      trackButtonClick(ButtonClickEvents.TOGGLE_REWARD_TOP_ONLY, 'pie_create_modal');
       return newValue;
     });
   };
 
   const handleTopChange = (value: number) => {
     setSelectedTop(value);
-    trackBusinessEvent(BusinessEvents.SELECT_TOP_ARTISTS_CHANGE);
   };
 
   const handleAmountChange = (increment: boolean) => {
@@ -44,7 +39,6 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
       const newAmount = increment ? prev + 1 : prev - 1;
       const result = Math.max(3, newAmount);
       setAmountError(result < 3 ? 'Minimum amount is $3' : '');
-      trackBusinessEvent(BusinessEvents.PIE_AMOUNT_CHANGED);
       return result;
     });
   };
@@ -53,21 +47,17 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
     const value = parseInt(e.target.value) || 0;
     setAmount(value);
     setAmountError(value < 3 ? 'Minimum amount is $3' : '');
-    trackBusinessEvent(BusinessEvents.PIE_AMOUNT_CHANGED);
   };
 
   const handleCreatePie = async () => {
-    trackBusinessEvent(BusinessEvents.PIE_CREATE_CLICK);
-
     try {
       const response = await createCheckoutSession({
         amount: amount * 100,
         artistLimit: isRewardTopOnly ? selectedTop : 0,
-        artistPopularity: 0, // Simplified - no popularity weighting
-        excludeNonActive: false, // Simplified - always include all artists
+        artistPopularity: 0,
+        excludeNonActive: false,
       }).unwrap();
 
-      trackBusinessEvent(BusinessEvents.PIE_CREATED);
       const checkoutUrl = response.data.url;
       window.location.href = checkoutUrl;
     } catch (error) {
@@ -89,7 +79,6 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
       onChange={() => setIsOpen(!isOpen)}
     >
       <div className="flex flex-col gap-6">
-        {/* Simple Amount Selector */}
         <div className="text-center">
           <div className="flex items-center justify-center mb-6">
             <button
@@ -126,7 +115,6 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
           </div>
         </div>
 
-        {/* Simple Distribution Options */}
         <div className="bg-[#1E152C] p-4 rounded-lg border border-[#8B5CF6]/20">
           <div className="flex items-center gap-3 mb-4">
             <input
@@ -159,7 +147,6 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
           )}
         </div>
 
-        {/* Simple Info */}
         <div className="bg-[#1E152C] p-4 rounded-lg border border-[#8B5CF6]/20">
           <h3 className="text-white font-medium mb-2">How it works:</h3>
           <ul className="text-[#A78BFA] text-sm space-y-1">
@@ -170,7 +157,6 @@ export const PieCreateModal = ({ className, openButton }: PieCreateModalProps) =
           </ul>
         </div>
 
-        {/* Create Button */}
         <button
           onClick={handleCreatePie}
           disabled={amount < 3 || isCreatingPie}

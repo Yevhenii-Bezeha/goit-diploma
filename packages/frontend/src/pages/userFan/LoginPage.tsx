@@ -1,30 +1,16 @@
 import { useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { isMobileDevice } from '../../utils/deviceDetection';
 import { NavLink } from 'react-router-dom';
-import { trackBusinessEvent, BusinessEvents } from '../../utils/analytics';
+
 import Spotify from '../../assets/icons/spotify.svg';
 
 const LoginPage = () => {
   const [isSpotifyLoading, setIsSpotifyLoading] = useState(false);
 
-  const { executeRecaptcha } = useGoogleReCaptcha();
-
   const onSpotifyLogin = async () => {
     try {
       setIsSpotifyLoading(true);
 
-      trackBusinessEvent(BusinessEvents.LOGIN_SPOTIFY);
-
-      if (!executeRecaptcha) {
-        console.error('reCAPTCHA not initialized');
-        setIsSpotifyLoading(false);
-        return;
-      }
-
-      const token = await executeRecaptcha('spotify_login');
-
-      // Check if this is a mobile device
       const isMobile = isMobileDevice();
 
       const baseUrl =
@@ -32,9 +18,9 @@ const LoginPage = () => {
           ? 'https://mypie.app/api/auth/loginSpotify'
           : 'http://localhost:3000/api/auth/loginSpotify';
 
-      window.location.href = `${baseUrl}?deviceType=${isMobile ? 'mobile' : 'desktop'}&recaptchaToken=${token}`;
+      window.location.href = `${baseUrl}?deviceType=${isMobile ? 'mobile' : 'desktop'}`;
     } catch (error) {
-      console.error('reCAPTCHA verification failed:', error);
+      console.error('Spotify login failed:', error);
       setIsSpotifyLoading(false);
     }
   };

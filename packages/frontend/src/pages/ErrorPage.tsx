@@ -14,19 +14,16 @@ const ErrorPage = ({ title = 'Error', error }: ErrorPageProps) => {
   const routeError = useRouteError() as Error;
 
   useEffect(() => {
-    // Get error type from URL
     const params = new URLSearchParams(location.search);
     const errorTypeFromUrl = params.get('type') || 'unknown';
     setErrorType(errorTypeFromUrl);
 
-    // Log the error to console
     const errorToLog = error || routeError;
     if (errorToLog) {
       console.error('Error caught by ErrorPage:', errorToLog);
     }
   }, [location, error, routeError]);
 
-  // Error message mapping
   const getErrorMessage = () => {
     switch (errorType) {
       case 'state_mismatch':

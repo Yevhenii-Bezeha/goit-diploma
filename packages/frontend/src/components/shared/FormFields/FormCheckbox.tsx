@@ -16,17 +16,14 @@ export const FormCheckbox = ({ label, required, className, disabled, small = fal
   const hasError = meta.touched && meta.error;
   const id = `checkbox-${props.name}`;
 
-  // Define the exact purple color to match the ContractQuestion component
-  const purpleColor = "#8B5CF6"; // This is the hex value for violet-600
-  
-  // Reset error when checkbox is toggled
+  const purpleColor = "#8B5CF6";
+
   useEffect(() => {
     if (field.checked && hasError) {
       helpers.setError(undefined);
     }
   }, [field.checked, hasError, helpers]);
 
-  // Size classes
   const boxSize = small ? 'w-5 h-5' : 'w-7 h-7';
   const checkSize = small ? 'w-3 h-3' : 'w-4 h-4';
   const marginLeft = small ? 'ml-2' : 'ml-4';
@@ -35,19 +32,18 @@ export const FormCheckbox = ({ label, required, className, disabled, small = fal
   const paddingRight = small ? 'pr-2' : 'pr-4';
 
   return (
-    <label 
+    <label
       htmlFor={id}
       className={classnames(
-        "flex items-start space-x-4 w-full rounded-lg transition-colors duration-200 border", 
-        field.checked 
-          ? "bg-[#8B5CF6] border-[#8B5CF6] text-white" 
+        "flex items-start space-x-4 w-full rounded-lg transition-colors duration-200 border",
+        field.checked
+          ? "bg-[#8B5CF6] border-[#8B5CF6] text-white"
           : "bg-transparent border-[#8B5CF6] text-gray-300",
-        !disabled && 'cursor-pointer', 
+        !disabled && 'cursor-pointer',
         disabled && 'cursor-not-allowed opacity-70',
         className
       )}
       style={{
-        // Ensure consistent color application
         borderColor: disabled ? "" : field.checked ? purpleColor : purpleColor,
         backgroundColor: field.checked ? purpleColor : ""
       }}

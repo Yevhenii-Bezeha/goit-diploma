@@ -1,14 +1,11 @@
 import Fund from '../../assets/icons/funds.svg';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Pagination } from '../../components/shared/Pagination/Pagination';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { isUserOfficeAdminSelector } from '../../redux/userArtist/userArtistSlice';
 import PayoutModal from '../../components/userArtist/ArtistFund/PayoutModal';
-import { Tabs } from '../../components/shared/Tabs/Tabs';
 
-// Import API hooks - simplified for diploma version
 import {
   useGetWalletBalanceQuery,
   useGetUserArtistQuery,
@@ -17,7 +14,6 @@ import {
   useCreateStripeOnboardingLinkMutation,
 } from '../../redux/userArtist';
 
-// Simplified Office type
 interface OfficeWithStripe {
   _id: string;
   name: string;
@@ -34,7 +30,6 @@ interface OfficeWithStripe {
   updatedAt: string;
 }
 
-// Simple USD formatting function
 const formatUSD = (amount: number) => `$${(amount / 100).toFixed(2)}`;
 
 const formatDate = (dateString: string) => {
@@ -57,10 +52,8 @@ const ArtistFundPage = () => {
   const officeId = selectedOffice?._id || '';
   const isAdmin = useSelector(isUserOfficeAdminSelector);
 
-  // Check if the office has a complete Stripe setup
   const isStripeSetupComplete = selectedOffice?.stripe_connect_account_status === 'complete';
 
-  // Always fetch wallet balance if we have an office ID
   const { data: walletBalance, isLoading: balanceLoading } = useGetWalletBalanceQuery(
     { officeId },
     {
@@ -68,7 +61,6 @@ const ArtistFundPage = () => {
     }
   );
 
-  // Fetch all transactions for first tab
   const { data: allTransactions, isLoading: allTransactionsLoading } = useGetTransactionsQuery(
     {
       officeId,
@@ -79,7 +71,6 @@ const ArtistFundPage = () => {
     }
   );
 
-  // Fetch payouts for second tab
   const { data: payoutsData, isLoading: payoutsLoading } = useGetPayoutsQuery(
     {
       officeId,
@@ -90,7 +81,6 @@ const ArtistFundPage = () => {
   );
 
   const [createStripeOnboardingLink] = useCreateStripeOnboardingLinkMutation();
-  const navigate = useNavigate();
 
   const handleStripeSetup = async () => {
     if (!officeId) return;
@@ -122,18 +112,9 @@ const ArtistFundPage = () => {
   const isLoading = userLoading || balanceLoading;
 
   const availableAmount = walletBalance?.totalAvailable ?? 0;
-  const totalInPayout = walletBalance?.totalInPayout ?? 0;
   const totalPaidOut = walletBalance?.totalPaidOut ?? 0;
 
-  const handleViewTransactionDetails = (transactionId: string, transactionType?: string) => {
-    if (!officeId) {
-      console.error('No office ID available for navigation');
-      return;
-    }
 
-    // Simplified navigation - all transactions go to transaction details
-    navigate(`/for-artists/funds/transactions/${transactionId}?officeId=${officeId}`);
-  };
 
   const handleTabChange = (index: number) => {
     setActiveTab(index);
@@ -149,7 +130,6 @@ const ArtistFundPage = () => {
     );
   }
 
-  // Simplified Stripe setup status component
   const StripeSetupStatus = () => {
     if (!selectedOffice?.stripe_connect_account_id) {
       return (
@@ -254,12 +234,10 @@ const ArtistFundPage = () => {
     return null;
   };
 
-  // Show setup status when Stripe is not set up
   if (!isStripeSetupComplete) {
     return <StripeSetupStatus />;
   }
 
-  // Simplified payouts table component
   const PayoutsTable = ({ payouts, loading }: any) => (
     <div className="space-y-2">
       {loading ? (
@@ -268,8 +246,7 @@ const ArtistFundPage = () => {
         payouts.data.map((payout: any) => (
           <div
             key={payout.id}
-            className="bg-[#120E16] rounded-lg p-3 cursor-pointer hover:bg-[#1A1520] transition-colors"
-            onClick={() => handleViewTransactionDetails(payout.id, 'payout')}
+            className="bg-[#120E16] rounded-lg p-3 transition-colors"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -316,11 +293,9 @@ const ArtistFundPage = () => {
     </div>
   );
 
-  // Simplified transaction table component
   const TransactionTable = ({ transactions, loading, onPageChange, currentPage }: any) => (
     <div>
 
-      {/* Simplified table */}
       <div className="space-y-2">
         {loading ? (
           <div className="text-center py-8 text-gray-400 text-sm">Loading...</div>
@@ -328,11 +303,19 @@ const ArtistFundPage = () => {
           transactions.data.map((transaction: any) => {
             const isCredit = transaction.transaction_type === 'credit';
 
+            let transactionLabel = 'Earnings';
+            if (transaction.transaction_type === 'payout') {
+              if (transaction.source === 'artist_payout') {
+                transactionLabel = 'Payout';
+              }
+            } else if (transaction.transaction_type === 'credit') {
+              transactionLabel = 'Earnings';
+            }
+
             return (
               <div
                 key={transaction.transaction_id}
-                className="bg-[#120E16] rounded-lg p-3 cursor-pointer hover:bg-[#1A1520] transition-colors"
-                onClick={() => handleViewTransactionDetails(transaction.transaction_id, transaction.transaction_type)}
+                className="bg-[#120E16] rounded-lg p-3 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -357,7 +340,7 @@ const ArtistFundPage = () => {
                       {isCredit ? '+' : '-'}{formatUSD(transaction.amount)}
                     </div>
                     <div className="text-gray-400 text-sm">
-                      {isCredit ? 'Earnings' : 'Fee'}
+                      {transactionLabel}
                     </div>
                   </div>
                 </div>
@@ -386,7 +369,6 @@ const ArtistFundPage = () => {
     </div>
   );
 
-  // Tab content for All Transactions
   const allTransactionsContent = (
     <TransactionTable
       transactions={allTransactions}
@@ -396,7 +378,6 @@ const ArtistFundPage = () => {
     />
   );
 
-  // Tab content for Payouts
   const payoutsContent = (
     <PayoutsTable
       payouts={payoutsData}
@@ -412,7 +393,6 @@ const ArtistFundPage = () => {
       <div className="w-full">
         <div className="px-4 pt-0 pb-4 w-full mt-4">
 
-          {/* Simplified Stats - Single Row */}
           <div className="bg-[#1A1520] rounded-lg p-6 mb-6">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-center sm:text-left">
@@ -435,7 +415,6 @@ const ArtistFundPage = () => {
             </div>
           </div>
 
-          {/* Simplified Tabs */}
           <div className="bg-[#1A1520] rounded-lg p-4">
             <div className="flex gap-1 mb-4 bg-[#120E16] rounded-lg p-1">
               {tabs.map((tab, index) => (

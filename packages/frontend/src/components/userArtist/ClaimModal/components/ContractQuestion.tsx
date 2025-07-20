@@ -11,12 +11,9 @@ export const ContractQuestion = ({ name }: ContractQuestionProps) => {
   const { setFieldValue } = useFormikContext<ClaimFormInternalValues>();
   const hasError = meta.touched && meta.error;
 
-  // Handle contract question answer
   const handleContractAnswer = (hasContracts: boolean) => {
     helpers.setValue(hasContracts);
 
-    // If user selects "No" (no existing contracts), automatically set agreesToWaiver to true
-    // Otherwise, leave it as is (the user will need to explicitly check the waiver checkbox)
     if (!hasContracts) {
       setFieldValue('agreesToWaiver', true);
     }

@@ -19,14 +19,12 @@ interface PayoutModalProps {
   }>;
 }
 
-// Simple USD formatting function
 const formatUSD = (amount: number) => `$${(amount / 100).toFixed(2)}`;
 
 export const PayoutModal = ({ isOpen, onClose, maxAmount, officeId, artistBreakdown = [] }: PayoutModalProps) => {
   const [createPayout, { isLoading }] = useCreatePayoutMutation();
   const isAdmin = useSelector(isUserOfficeAdminSelector);
 
-  // Simplified success state
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handlePayout = async () => {
@@ -50,7 +48,6 @@ export const PayoutModal = ({ isOpen, onClose, maxAmount, officeId, artistBreakd
 
   const isValidPayout = maxAmount >= 300;
 
-  // Simplified success modal
   if (showSuccess) {
     return (
       <Modal value={isOpen} onChange={onClose} title="Success">
@@ -77,18 +74,15 @@ export const PayoutModal = ({ isOpen, onClose, maxAmount, officeId, artistBreakd
   return (
     <Modal value={isOpen} onChange={onClose} title="Request Payout">
       <div className="p-6 max-w-sm mx-auto">
-        {/* Simplified amount display */}
         <div className="text-center mb-6">
           <div className="text-4xl font-bold text-green-500 mb-1">{formatUSD(maxAmount)}</div>
           <div className="text-gray-400 text-sm">Available for payout</div>
         </div>
 
-        {/* Minimal info */}
         <div className="text-gray-400 text-sm text-center mb-6">
           Monthly fee: $2.00 • Payout fee: 0.3%
         </div>
 
-        {/* Simple artist count */}
         {artistBreakdown.length > 0 && (
           <div className="text-center mb-6">
             <div className="text-white text-sm">
@@ -97,7 +91,6 @@ export const PayoutModal = ({ isOpen, onClose, maxAmount, officeId, artistBreakd
           </div>
         )}
 
-        {/* Simplified action buttons */}
         <div className="space-y-3">
           <button
             onClick={handlePayout}

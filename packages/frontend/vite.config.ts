@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
-import { VitePWA } from 'vite-plugin-pwa';
 import { loadEnv } from 'vite';
 import { resolve } from 'path';
 
@@ -23,92 +22,6 @@ export default defineConfig(({ mode }) => {
           titleProp: true,
         },
         include: '**/*.svg',
-      }),
-      VitePWA({
-        registerType: 'autoUpdate',
-        includeAssets: ['favicon.jpeg', 'icons/*.png', 'icons/*.svg'],
-        manifest: {
-          name: 'StreamSupport - Support the Artists you Stream',
-          short_name: 'StreamSupport',
-          description: 'Revolutionary Spotify-integrated platform that empowers music fans to support artists through automatic, listening-based monthly budget distribution',
-          theme_color: '#a456fb',
-          background_color: '#121212',
-          display: 'standalone',
-          orientation: 'portrait-primary',
-          scope: '/',
-          start_url: '/',
-          icons: [
-            {
-              src: '/favicon.jpeg',
-              sizes: '72x72',
-              type: 'image/jpeg',
-              purpose: 'any'
-            },
-            {
-              src: '/icons/icon-192x192.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'any'
-            },
-            {
-              src: '/icons/icon-192x192.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'maskable'
-            },
-            {
-              src: '/icons/icon-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'any'
-            },
-            {
-              src: '/icons/icon-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'maskable'
-            }
-          ]
-        },
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,jpeg,jpg}'],
-          navigateFallback: 'index.html',
-          navigateFallbackDenylist: [/^\/api/],
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/api\.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'api-cache',
-                expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 60 * 60 * 24 // 24 hours
-                },
-                cacheableResponse: {
-                  statuses: [0, 200]
-                }
-              }
-            },
-            {
-              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'google-fonts-cache',
-                expiration: {
-                  maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
-                },
-                cacheableResponse: {
-                  statuses: [0, 200]
-                }
-              }
-            }
-          ]
-        },
-        devOptions: {
-          enabled: true,
-          type: 'module'
-        }
       })
     ],
     server: {

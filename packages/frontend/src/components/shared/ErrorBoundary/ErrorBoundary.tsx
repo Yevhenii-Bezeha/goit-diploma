@@ -18,7 +18,6 @@ interface ErrorBoundaryState {
   errorInfo: ErrorInfo | null;
 }
 
-// Default fallback UI component
 const DefaultFallbackComponent: React.FC<FallbackProps> = () => {
   const navigate = useNavigate();
 
@@ -52,18 +51,14 @@ const DefaultFallbackComponent: React.FC<FallbackProps> = () => {
   );
 };
 
-// Disable React error overlay in development mode
 if (import.meta.env.DEV) {
   window.addEventListener('error', (event) => {
-    // Check if the error is from our component
     if (event.error && event.error.message && event.error.message.includes('ErrorTest component')) {
-      // Prevent the default error handler from showing React's overlay
       event.preventDefault();
     }
   });
 }
 
-// Custom Error Boundary
 export class GlobalErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
@@ -75,7 +70,6 @@ export class GlobalErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoun
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    // Update state so the next render shows the fallback UI
     return {
       hasError: true,
       error,
@@ -84,12 +78,10 @@ export class GlobalErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Update state with error details
     this.setState({
       errorInfo,
     });
 
-    // Log to console in development
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
   }
 
@@ -106,7 +98,6 @@ export class GlobalErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoun
     const { children, fallback } = this.props;
 
     if (hasError) {
-      // Render fallback UI
       if (!fallback) {
         return (
           <DefaultFallbackComponent

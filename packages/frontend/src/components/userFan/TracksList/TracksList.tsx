@@ -2,7 +2,7 @@ import SpotifyLogoSmall from '../../../assets/icons/spotify.svg';
 import { useEffect, useRef } from 'react';
 import { Track } from '../../../redux/userFan';
 import { msToTime, formatPlayedAt } from '../../../utils';
-import { NavigationEvents, trackNavigation } from '../../../utils/analytics';
+
 
 interface TracksListProps {
   data: Track[];
@@ -43,7 +43,7 @@ export const TracksList = ({ data, currentPage, isArtistDetails, hideListenCount
           <a
             key={track._id}
             href={track.external_url}
-            onClick={() => trackNavigation(NavigationEvents.NAVIGATION_TO_SPOTIFY_TRACK, 'tracks_list')}
+            onClick={() => { }}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-[#120E16] text-white rounded-lg transition-all duration-200 hover:bg-[#39314b] hover:scale-[1.01] group block w-full"

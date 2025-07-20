@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User, Office } from './userArtistApi';
+import { Office } from './userArtistApi';
 import { userArtistApi } from './userArtistApi';
 import { RootState } from '../../store';
 
@@ -21,26 +21,22 @@ export const userArtistSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    // No extra reducers needed since we're not caching user data anymore
   },
 });
 
 export const { setSelectedOffice } = userArtistSlice.actions;
 
-// Selector to check if the current user is an admin in the selected office
 export const isUserOfficeAdminSelector = (state: RootState): boolean => {
   const { selectedOffice } = state.userArtist;
   const userData = userArtistApi.endpoints.getUserArtist.select()(state).data;
 
   if (!userData || !selectedOffice) return false;
 
-  // Find the current user in the office members and check their role
   const member = selectedOffice.members.find((member: { user_id: string }) => member.user_id === userData._id);
 
   return member?.role === 'admin';
 };
 
-// Selector to check if user profile is complete with required fields
 export const isUserProfileCompleteSelector = (state: RootState): boolean => {
   const userData = userArtistApi.endpoints.getUserArtist.select()(state).data;
 

@@ -1,6 +1,5 @@
 import { useFormikContext } from 'formik';
 import { ClaimFormInternalValues } from '../validation';
-import { useVerifyBioMutation } from '../../../../redux/userArtist/userArtistApi';
 import React, { useEffect, useState } from 'react';
 
 interface BioVerificationProps {
@@ -14,13 +13,10 @@ export const BioVerification = ({ isSubmitting, onComplete, createdClaimId }: Bi
   const { values, setFieldValue } = useFormikContext<ClaimFormInternalValues>();
   const [copied, setCopied] = useState(false);
   const [bioVerificationMessage, setBioVerificationMessage] = useState<string | null>(null);
-  const [verifyBio, { isLoading: isBioVerifying }] = useVerifyBioMutation();
 
   const handleContactSupport = () => {
-    console.log('Support contact requested');
   };
 
-  // Generate artist profile URL for display
   const getArtistProfileUrl = () => {
     if (!values.selectedArtistData?._id) return '';
     return `https://mypie.app/artist-public/${values.selectedArtistData._id}`;
@@ -29,14 +25,12 @@ export const BioVerification = ({ isSubmitting, onComplete, createdClaimId }: Bi
   const artistProfileUrl = getArtistProfileUrl();
   const spotifyUrl = values.selectedArtistData?.external_url || '';
 
-  // Update verificationString to be the artistProfileUrl when the component loads or when artistProfileUrl changes
   useEffect(() => {
     if (artistProfileUrl) {
       setFieldValue('verificationString', artistProfileUrl);
     }
   }, [artistProfileUrl, setFieldValue]);
 
-  // Set Spotify as the selected platform by default
   useEffect(() => {
     if (!values.selectedPlatform) {
       setFieldValue('selectedPlatform', {
@@ -48,38 +42,11 @@ export const BioVerification = ({ isSubmitting, onComplete, createdClaimId }: Bi
   }, [values.selectedPlatform, setFieldValue, spotifyUrl]);
 
   const handleBioVerification = async () => {
-    if (!values.selectedArtistData?.external_url) {
-      setBioVerificationMessage('Missing artist Spotify URL for verification.');
-      return;
-    }
+    setBioVerificationMessage('Please add the profile link to your Spotify bio and contact support for manual verification.');
 
-    setBioVerificationMessage(null);
-
-    try {
-      if (createdClaimId) {
-        // If claim already exists, proceed with bio verification
-        const result = await verifyBio({
-          claimId: createdClaimId,
-          spotifyArtistUrl: values.selectedArtistData.external_url,
-          mypieLink: artistProfileUrl
-        }).unwrap();
-
-        if (result.success) {
-          setBioVerificationMessage('Verification initiated. You will receive an email within 24 hours with the results.');
-          setTimeout(() => {
-            onComplete();
-          }, 2000);
-        } else {
-          setBioVerificationMessage(result.message || 'An error occurred during verification.');
-        }
-      } else {
-        // If no claim ID exists, create the claim first
-        setBioVerificationMessage('Creating claim and initiating verification...');
-        await onComplete();
-      }
-    } catch (error) {
-      setBioVerificationMessage('An error occurred while processing your verification. Please try again.');
-    }
+    setTimeout(() => {
+      onComplete();
+    }, 2000);
   };
 
   return (
@@ -106,7 +73,6 @@ export const BioVerification = ({ isSubmitting, onComplete, createdClaimId }: Bi
           We'll verify your identity by checking your Spotify for Artists profile. Please add your artist profile link to your bio.
         </p>
 
-        {/* Profile link to copy */}
         <div className="space-y-2">
           <label className="text-sm text-gray-300">Add this link to your Spotify bio:</label>
           <div
@@ -128,7 +94,6 @@ export const BioVerification = ({ isSubmitting, onComplete, createdClaimId }: Bi
           )}
         </div>
 
-        {/* Instructions */}
         <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
           <h4 className="font-medium text-white mb-4">Instructions:</h4>
           <ol className="list-decimal pl-5 space-y-2 text-sm text-gray-300">
@@ -145,22 +110,14 @@ export const BioVerification = ({ isSubmitting, onComplete, createdClaimId }: Bi
             <li>Save your changes.</li>
           </ol>
 
-          {/* Verification button */}
           <div className="mt-6">
             <button
               type="button"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleBioVerification}
-              disabled={isSubmitting || isBioVerifying}
+              disabled={isSubmitting}
             >
-              {isBioVerifying ? (
-                <div className="flex items-center justify-center">
-                  <span>Verifying...</span>
-                  <div className="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              ) : (
-                'I have completed this step'
-              )}
+              I have completed this step
             </button>
           </div>
 

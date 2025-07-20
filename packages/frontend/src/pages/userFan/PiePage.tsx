@@ -9,13 +9,13 @@ import {
   useGetPieArtistsQuery,
   useBanArtistMutation,
   useSetArtistInclusionMutation,
+  useAddMissingTracksAnytimeMutation,
 } from '../../redux/userFan';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Button, Tabs } from '../../components/shared';
 import ReactAvatar from 'react-avatar';
 import { useGetUserQuery } from '../../redux/userFan';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { trackButtonClick, trackBusinessEvent, BusinessEvents, ButtonClickEvents } from '../../utils/analytics';
+
 
 const calculatePieTime = (startDate: string) => {
   const start = new Date(startDate);
@@ -25,7 +25,6 @@ const calculatePieTime = (startDate: string) => {
   return diffDays;
 };
 
-// User Avatar Component for MainCard
 const UserAvatar: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
   const { data: userData } = useGetUserQuery();
 
@@ -52,12 +51,10 @@ const PiePage = () => {
   const location = useLocation();
 
   const { data: userData, refetch: refetchUser } = useGetUserQuery();
-  const isSpotifyConnected = !!userData?.data?.spotify_id;
+  const isSpotifyConnected = !!userData?.data?.linked_accounts?.some(account => account.provider === 'spotify');
   const [searchParams, setSearchParams] = useSearchParams();
-  const { executeRecaptcha } = useGoogleReCaptcha();
   const [isConnecting, setIsConnecting] = useState(false);
 
-  // Handle Spotify connection success
   useEffect(() => {
     const spotifyConnected = searchParams.get('spotifyConnected');
     if (spotifyConnected === 'true') {
@@ -70,28 +67,19 @@ const PiePage = () => {
   const handleSpotifyConnect = async () => {
     try {
       setIsConnecting(true);
-      trackBusinessEvent(BusinessEvents.SPOTIFY_CONNECTED);
 
-      if (!executeRecaptcha) {
-        console.error('reCAPTCHA not initialized');
-        setIsConnecting(false);
-        return;
-      }
-
-      const token = await executeRecaptcha('spotify_login');
       const baseUrl =
         process.env.NODE_ENV === 'production'
           ? 'https://mypie.app/api/auth/connectSpotify'
           : 'http://localhost:3000/api/auth/connectSpotify';
 
-      window.location.href = `${baseUrl}?deviceType=${window.innerWidth < 768 ? 'mobile' : 'desktop'}&recaptchaToken=${token}`;
+      window.location.href = `${baseUrl}?deviceType=${window.innerWidth < 768 ? 'mobile' : 'desktop'}`;
     } catch (error) {
-      console.error('reCAPTCHA verification failed:', error);
+      console.error('Spotify connection failed:', error);
       setIsConnecting(false);
     }
   };
 
-  // Fetch active pie data
   const pieQuery = useGetPieActiveQuery(pieId, {
     skip: !isSpotifyConnected,
     refetchOnMountOrArgChange: true,
@@ -108,8 +96,8 @@ const PiePage = () => {
 
   const [banArtist] = useBanArtistMutation();
   const [setArtistInclusion] = useSetArtistInclusionMutation();
+  const [addMissingTracksAnytime] = useAddMissingTracksAnytimeMutation();
 
-  // Fetch pie artists data
   const {
     data: { data } = {},
     isError: isFinalSplitError,
@@ -142,7 +130,6 @@ const PiePage = () => {
 
   const tabs = ['Supported Artists', 'Excluded Artists'];
 
-  // Simple Stats Box
   const SimpleStatsBox = ({ value, label }: { value: string | number; label: string }) => (
     <div className="bg-[#1E152C] rounded-lg p-4 border border-[#8B5CF6]/20">
       <div className="text-xl font-bold text-[#8B5CF6] mb-1 text-center">
@@ -152,10 +139,8 @@ const PiePage = () => {
     </div>
   );
 
-  // Event handlers
   const handleAddToPie = async (artistId: string) => {
     try {
-      trackBusinessEvent(BusinessEvents.ARTIST_ADDED_TO_PIE);
       await setArtistInclusion({ pieArtistId: artistId, included: true });
     } catch (error) {
       console.error('Error adding artist to pie:', error);
@@ -164,7 +149,6 @@ const PiePage = () => {
 
   const handleRemoveFromPie = async (pieArtistId: string) => {
     try {
-      trackBusinessEvent(BusinessEvents.ARTIST_REMOVED_FROM_PIE);
       await setArtistInclusion({ pieArtistId: pieArtistId, included: false });
     } catch (error) {
       console.error('Error removing artist from pie:', error);
@@ -173,10 +157,17 @@ const PiePage = () => {
 
   const handleRemoveFromAllPies = async (artistId: string) => {
     try {
-      trackBusinessEvent(BusinessEvents.ARTIST_REMOVED_FROM_PIE);
       await banArtist({ artistId, banned: true });
     } catch (error) {
       console.error('Error banning artist:', error);
+    }
+  };
+
+  const handleAddMissingTracks = async () => {
+    try {
+      await addMissingTracksAnytime();
+    } catch (error) {
+      console.error('Error adding missing tracks:', error);
     }
   };
 
@@ -191,7 +182,6 @@ const PiePage = () => {
         </div>
       )}
 
-      {/* Error handling */}
       {isPieDataReady && isActivePieError && (
         <div className="mt-3 px-4">
           <MainCard Svg={UserAvatar} variant="compact">
@@ -202,7 +192,6 @@ const PiePage = () => {
         </div>
       )}
 
-      {/* No Active Pie - Create New */}
       {isPieDataReady && !pieActive && !isActivePieError && (
         <div className="mt-3 px-4">
           <MainCard Svg={UserAvatar} variant="featured">
@@ -230,7 +219,7 @@ const PiePage = () => {
                     openButton={
                       <Button
                         title="Create Micro-Donation"
-                        onClick={() => trackButtonClick('create_pie_button_click' as any, 'pie_page', {})}
+                        onClick={() => { }}
                         className="bg-gradient-to-r from-[#8B5CF6] to-[#A78BFA] hover:from-[#A78BFA] hover:to-[#8B5CF6] text-white font-semibold py-2 px-6 rounded-lg"
                       />
                     }
@@ -242,7 +231,6 @@ const PiePage = () => {
         </div>
       )}
 
-      {/* Active Pie Display */}
       {isPieDataReady && pieActive && !isActivePieError && (
         <>
           <div className="mt-3 px-4">
@@ -257,7 +245,6 @@ const PiePage = () => {
             </MainCard>
           </div>
 
-          {/* Simple Statistics */}
           <div className="grid grid-cols-2 gap-4 mb-6 px-4">
             <SimpleStatsBox
               value={pieActive?.count_artists || 0}
@@ -269,21 +256,23 @@ const PiePage = () => {
             />
           </div>
 
+          <div className="px-4 mb-6">
+            <Button
+              title="Sync Missing Tracks"
+              onClick={handleAddMissingTracks}
+              className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#A78BFA] hover:from-[#A78BFA] hover:to-[#8B5CF6] text-white font-semibold py-3 px-6 rounded-lg"
+            />
+          </div>
 
 
-          {/* Artists Tabs */}
+
           <div className="flex flex-col flex-1 rounded-t-[20px] px-4">
             <Tabs
               tabs={tabs}
               className="mb-6"
               defaultIndex={0}
               onChange={(index) => {
-                trackButtonClick(
-                  index === 0
-                    ? ButtonClickEvents.VIEW_PIE_INCLUDED_ARTISTS
-                    : ButtonClickEvents.VIEW_PIE_EXCLUDED_ARTISTS,
-                  'pie_page'
-                );
+                // Tab changed
               }}
             >
               {[

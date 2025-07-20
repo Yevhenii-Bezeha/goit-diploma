@@ -9,7 +9,6 @@ import { ALLOWED_COUNTRIES } from '../../constants/allowedCountries';
 import { useCompleteGoogleRegistrationMutation } from '../../redux/userArtist/authApi';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
-// Move countryOptions outside of component to prevent recreation on each render
 const countryOptions = Object.entries(ALLOWED_COUNTRIES)
   .map(([value, label]) => ({
     value,

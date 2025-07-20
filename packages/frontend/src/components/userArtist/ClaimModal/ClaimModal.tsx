@@ -36,12 +36,10 @@ export const ClaimModal = ({ visible, onChange, openComponent }: ClaimModalProps
     }
   );
 
-  // Fetch user data when modal is visible
   useGetUserArtistQuery(undefined, {
     skip: !visible,
   });
 
-  // Custom back arrow handler for modal header
   const handleBackArrow = () => {
     if (
       currentStep === 2 &&

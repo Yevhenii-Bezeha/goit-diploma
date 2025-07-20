@@ -4,7 +4,6 @@ import { BaseQueryFn } from '@reduxjs/toolkit/query';
 import { AxiosRequestConfig } from 'axios';
 import { User } from './userArtistApi.ts';
 
-// Types
 interface LoginResponse {
   token: string;
   user: User;
@@ -25,7 +24,6 @@ type AxiosBaseQueryType = BaseQueryFn<
 const domainUrl =
   process.env.NODE_ENV === 'production' ? 'https://mypie.app/api/for-artists' : 'http://localhost:3000/api/for-artists';
 
-// Auth API
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: axiosBaseQuery() as AxiosBaseQueryType,

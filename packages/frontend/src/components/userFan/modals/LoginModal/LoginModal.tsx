@@ -2,9 +2,8 @@ import Spotify from '../../../../assets/icons/spotify.svg';
 import { Modal } from '../../../shared/Modal';
 import { ReactNode, useState } from 'react';
 import classnames from 'classnames';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { isMobileDevice } from '../../../../utils/deviceDetection';
-import { trackBusinessEvent, BusinessEvents } from '../../../../utils/analytics';
+
 
 type LoginModalProps = {
   openComponent?: ReactNode;
@@ -16,23 +15,11 @@ type LoginModalProps = {
 export const LoginModal = ({ openComponent, title = 'Login', openComponentClassName, className }: LoginModalProps) => {
   const [isSpotifyLoading, setIsSpotifyLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const onSpotifyLogin = async () => {
     try {
       setIsSpotifyLoading(true);
 
-      trackBusinessEvent(BusinessEvents.LOGIN_SPOTIFY);
-
-      if (!executeRecaptcha) {
-        console.error('reCAPTCHA not initialized');
-        setIsSpotifyLoading(false);
-        return;
-      }
-
-      const token = await executeRecaptcha('spotify_login');
-
-      // Check if this is a mobile device
       const isMobile = isMobileDevice();
 
       const baseUrl =
@@ -40,14 +27,13 @@ export const LoginModal = ({ openComponent, title = 'Login', openComponentClassN
           ? 'https://mypie.app/api/auth/loginSpotify'
           : 'http://localhost:3000/api/auth/loginSpotify';
 
-      window.location.href = `${baseUrl}?deviceType=${isMobile ? 'mobile' : 'desktop'}&recaptchaToken=${token}`;
+      window.location.href = `${baseUrl}?deviceType=${isMobile ? 'mobile' : 'desktop'}`;
     } catch (error) {
-      console.error('reCAPTCHA verification failed:', error);
+      console.error('Spotify login failed:', error);
       setIsSpotifyLoading(false);
     }
   };
 
-  // Handler for modal open/close state changes
   const handleModalChange = () => {
     setIsModalOpen(!isModalOpen);
   };

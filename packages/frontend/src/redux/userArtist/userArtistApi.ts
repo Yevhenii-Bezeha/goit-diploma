@@ -3,7 +3,6 @@ import axiosBaseQuery from '../../api/api.ts';
 import { BaseQueryFn } from '@reduxjs/toolkit/query';
 import { AxiosRequestConfig } from 'axios';
 
-// Helper function to generate random verification string
 export const generateVerificationString = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = 'mypie_';
@@ -13,7 +12,6 @@ export const generateVerificationString = () => {
   return result;
 };
 
-// Types
 export interface User {
   _id: string;
   email: string;
@@ -80,7 +78,6 @@ export interface ArtistClaim {
     total_earned: number;
     available_to_payout: number;
     total_paid_out: number;
-    // in_payout: number; // Added to match backend and fix linter error
   };
   office?: {
     id: string;
@@ -135,49 +132,6 @@ interface PayoutsResponse {
   has_more: boolean;
   data: Payout[];
 }
-
-// ClaimTransaction interface - represents artist wallet transactions
-// that have been processed into transfers for a specific claim
-interface ClaimTransaction {
-  transaction_id: string; // Maps to ArtistWalletTransaction._id
-  artist_id: string;
-  artist_name: string;
-  artist_image: string;
-  amount: number;
-  user_id: string; // Fan user who made the payment
-  created_at: string;
-  available_at: string;
-  status: string; // Maps to ArtistWalletTransaction.status
-  payout_id: string | null;
-  fan_customer_id: string;
-  fan_user_id: string;
-  pie_id: string;
-  charge_id: string;
-  transfer_id?: string;
-}
-
-
-interface ClaimPayout {
-  payout_id: string;
-  amount: number;
-  created_at: string;
-  arrival_date: string;
-  status: string;
-  description: string;
-  method: string;
-  type: string;
-  transfer_count: number;
-  total_transfer_amount: number;
-  transfer_ids: string[];
-  fee_amount?: number;
-  net_amount?: number;
-  has_platform_fee?: boolean;
-  fee_details?: {
-    type: string;
-    description: string;
-  };
-}
-
 
 interface WalletBalance {
   totalAvailable: number;
@@ -305,15 +259,7 @@ export const userArtistApi = createApi({
       }),
       invalidatesTags: ['Claims'],
     }),
-    verifyBio: build.mutation<{ success: boolean; message: string }, { claimId: string; spotifyArtistUrl: string; mypieLink: string }>({
-      query: ({ claimId, spotifyArtistUrl, mypieLink }) => ({
-        url: `${domainUrl}/claims/${claimId}/verify-bio`,
-        method: 'POST',
-        data: { spotifyArtistUrl, mypieLink },
-        withCredentials: true,
-      }),
-      invalidatesTags: ['Claims'],
-    }),
+
     getPayouts: build.query<PayoutsResponse, { officeId: string; starting_after?: string }>({
       query: (params) => ({
         url: `${domainUrl}/stripe/payouts`,
@@ -434,7 +380,6 @@ export const userArtistApi = createApi({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          // Invalidate the offices query to refetch the list after creating a new office
           dispatch(userArtistApi.util.invalidateTags(['UserArtist']));
         } catch (err) {
           console.error('Failed to create office:', err);
@@ -454,7 +399,6 @@ export const {
   useDeleteClaimMutation,
   useCreateStripeOnboardingLinkMutation,
   useCreateClaimMutation,
-  useVerifyBioMutation,
   useGetWalletBalanceQuery,
   useCreatePayoutMutation,
   useGetTransactionsQuery,

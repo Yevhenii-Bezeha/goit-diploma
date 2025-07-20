@@ -14,5 +14,3 @@ export * from './Slider';
 export * from './Stepper';
 export * from './Tabs';
 export * from './Toggle';
-export * from './PWAInstallPrompt';
-export * from './PWAInstallButton';

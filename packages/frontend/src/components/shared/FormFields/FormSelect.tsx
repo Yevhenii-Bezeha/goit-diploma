@@ -21,7 +21,6 @@ export const FormSelect = ({ label, options, required, placeholder, className, .
   const [field, meta, helpers] = useField(props);
   const hasError = meta.touched && meta.error;
 
-  // If the current value is not in the options, just let Listbox show the placeholder
   const isValidValue = options.some((option) => option.value === field.value);
   const safeValue = isValidValue ? field.value : '';
 

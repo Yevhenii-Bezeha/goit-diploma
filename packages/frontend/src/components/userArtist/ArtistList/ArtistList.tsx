@@ -17,14 +17,13 @@ import { isUserOfficeAdminSelector } from '../../../redux/userArtist/userArtistS
 import { RootState } from '../../../store';
 import { Plus } from 'lucide-react';
 
-// Custom hook to get columns per row based on screen size
 const useColumnsPerRow = () => {
   const [columnsPerRow, setColumnsPerRow] = useState(() => {
     const width = window.innerWidth;
-    if (width >= 1024) return 5; // lg: 5 columns
-    if (width >= 768) return 4;  // md: 4 columns
-    if (width >= 640) return 3;  // sm: 3 columns
-    return 2; // default: 2 columns
+    if (width >= 1024) return 5;
+    if (width >= 768) return 4;
+    if (width >= 640) return 3;
+    return 2;
   });
 
   useEffect(() => {
@@ -43,7 +42,6 @@ const useColumnsPerRow = () => {
   return columnsPerRow;
 };
 
-// Claim Artist Slot Component
 const ClaimArtistSlot = ({ onClick }: { onClick?: () => void }) => {
   const navigate = useNavigate();
 
@@ -60,24 +58,20 @@ const ClaimArtistSlot = ({ onClick }: { onClick?: () => void }) => {
       className="bg-[#1F1730] rounded-[4px] sm:rounded-[2px] w-full p-3 cursor-pointer hover:bg-[#2a1f42] flex flex-col border-2 border-dashed border-violet-500/50 hover:border-violet-400 transition-colors"
       onClick={handleClaimArtist}
     >
-      {/* Empty Image Placeholder to match card height */}
       <div className="w-full aspect-square rounded-[4px] sm:rounded-[2px] mb-3 flex items-center justify-center">
         <div className="w-12 h-12 rounded-full bg-violet-600 hover:bg-violet-700 flex items-center justify-center transition-colors">
           <Plus className="w-6 h-6 text-white" />
         </div>
       </div>
 
-      {/* Empty Spotify Logo */}
       <div className="flex justify-center mb-2">
         <div className="w-[21px] h-[21px] opacity-0"></div>
       </div>
 
-      {/* Claim Artist Text */}
       <div className="text-violet-400 text-center mb-3 text-sm sm:text-base font-medium">
         Claim Artist
       </div>
 
-      {/* Empty Information Rows */}
       <div className="space-y-2">
         <div className="h-3 opacity-0"></div>
         <div className="h-3 opacity-0"></div>
@@ -86,23 +80,18 @@ const ClaimArtistSlot = ({ onClick }: { onClick?: () => void }) => {
   );
 };
 
-// Empty Slot Component
 const EmptySlot = () => {
   return (
     <div className="bg-[#1F1730] rounded-[4px] sm:rounded-[2px] w-full p-3 flex flex-col opacity-30">
-      {/* Empty Image Placeholder */}
       <div className="w-full aspect-square bg-gray-700 rounded-[4px] sm:rounded-[2px] mb-3">
       </div>
 
-      {/* Empty Spotify Logo */}
       <div className="flex justify-center mb-2">
         <div className="w-[21px] h-[21px] bg-gray-700 rounded"></div>
       </div>
 
-      {/* Empty Artist Name */}
       <div className="h-4 bg-gray-700 rounded mb-3"></div>
 
-      {/* Empty Information Rows */}
       <div className="space-y-2">
         <div className="h-3 bg-gray-700 rounded"></div>
         <div className="h-3 bg-gray-700 rounded"></div>
@@ -137,7 +126,6 @@ const PendingArtistRow = ({ artist }: PendingArtistRowProps) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Artist Image */}
         <div className="w-full mb-3">
           <img
             src={artist.artist.image || noArtistImage}
@@ -149,7 +137,6 @@ const PendingArtistRow = ({ artist }: PendingArtistRowProps) => {
           />
         </div>
 
-        {/* Spotify Logo */}
         <div className="flex justify-center mb-2">
           <a
             href={artist.artist.external_url}
@@ -165,19 +152,15 @@ const PendingArtistRow = ({ artist }: PendingArtistRowProps) => {
           </a>
         </div>
 
-        {/* Artist Name in Purple */}
         <div className="text-violet-400 font-medium text-center mb-3 text-sm sm:text-base">
           {artist.artist.name}
         </div>
 
-        {/* Information in Rows - Pending Status */}
         <div className="space-y-2">
-          {/* Status Row */}
           <div className="flex justify-center items-center">
             <span className="text-yellow-500 text-xs sm:text-sm font-medium">Pending artist</span>
           </div>
 
-          {/* Empty Row for consistent height */}
           <div className="flex justify-between items-center opacity-0">
             <span className="text-gray-400 text-xs">-</span>
             <span className="text-gray-400 text-sm">-</span>
@@ -193,7 +176,6 @@ const PendingArtistRow = ({ artist }: PendingArtistRowProps) => {
           </button>
         )}
       </div>
-      {/* Delete Claim Confirmation Modal */}
       <Modal
         value={showDeleteConfirmation}
         onClose={() => setShowDeleteConfirmation(false)}
@@ -223,21 +205,12 @@ interface SuccessfulArtistRowProps {
 }
 
 const SuccessfulArtistRow = ({ artist }: SuccessfulArtistRowProps) => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate(`/for-artists/artists/${artist.claim.id}`);
-  };
-
-  // Simple USD formatting function since we only support USD
   const formatUSD = (amount: number) => `$${(amount / 100).toFixed(2)}`;
 
   return (
     <div
-      className="bg-[#1F1730] rounded-[4px] sm:rounded-[2px] w-full p-3 cursor-pointer hover:bg-[#2a1f42] flex flex-col"
-      onClick={handleClick}
+      className="bg-[#1F1730] rounded-[4px] sm:rounded-[2px] w-full p-3 flex flex-col"
     >
-      {/* Artist Image */}
       <div className="w-full mb-3">
         <img
           src={artist.artist.image || noArtistImage}
@@ -249,7 +222,6 @@ const SuccessfulArtistRow = ({ artist }: SuccessfulArtistRowProps) => {
         />
       </div>
 
-      {/* Spotify Logo */}
       <div className="flex justify-center mb-2">
         <a
           href={artist.artist.external_url}
@@ -265,28 +237,17 @@ const SuccessfulArtistRow = ({ artist }: SuccessfulArtistRowProps) => {
         </a>
       </div>
 
-      {/* Artist Name in Purple */}
       <div className="text-violet-400 font-medium text-center mb-3 text-sm sm:text-base">
         {artist.artist.name}
       </div>
 
-      {/* Information in Rows */}
       <div className="space-y-2">
-        {/* Available to Payout Row */}
         <div className="flex justify-between items-center">
           <span className="text-gray-400 text-xs">Available</span>
           <span className="text-green-500 text-sm font-medium">
             {formatUSD(artist.wallet.available_to_payout || 0)}
           </span>
         </div>
-        {/* In Payout Row */}
-        {/* <div className="flex justify-between items-center">
-          <span className="text-gray-400 text-xs">In Payout</span>
-          <span className="text-violet-500 text-sm font-medium">
-            {formatUSD(artist.wallet?.in_payout || 0)}
-          </span>
-        </div> */}
-        {/* Paid Out Row */}
         <div className="flex justify-between items-center">
           <span className="text-gray-400 text-xs">Paid Out</span>
           <span className="text-white text-sm font-medium">
@@ -310,13 +271,10 @@ export const ArtistList = ({ status, onClaimArtist }: ArtistListProps) => {
   const selectedOffice = useSelector((state: RootState) => state.userArtist.selectedOffice);
   const { data: user } = useGetUserArtistQuery();
   const officeId = selectedOffice?._id || '';
-  const userId = user?._id;
   const columnsPerRow = useColumnsPerRow();
 
-  // Fetch all claimed artists for the office
   const { data: allClaims = [] } = useGetClaimsQuery({ officeId: officeId || '' }, { skip: !officeId });
 
-  // Filter claims by status
   const filteredClaims = allClaims.filter((claim) => claim.claim.status === status);
 
   const handleStripeSetup = async () => {
@@ -364,7 +322,6 @@ export const ArtistList = ({ status, onClaimArtist }: ArtistListProps) => {
     }
   };
 
-  // Only hide if no claims AND it's Pending status (since Successful always shows placeholders)
   if (filteredClaims.length === 0 && status === 'Pending') {
     return null;
   }
@@ -387,19 +344,16 @@ export const ArtistList = ({ status, onClaimArtist }: ArtistListProps) => {
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6 sm:mb-8 mt-4">
-        {/* Claim Artist Button - always first slot for both Successful and Pending status */}
         <ClaimArtistSlot onClick={onClaimArtist} />
 
-        {/* Existing Claims */}
         {filteredClaims.map((claim) => (
           <div key={claim.claim.id}>
             {status === 'Pending' ? <PendingArtistRow artist={claim} /> : <SuccessfulArtistRow artist={claim} />}
           </div>
         ))}
 
-        {/* Empty Slots - fill remaining slots in current row */}
         {status === 'Successful' && (() => {
-          const totalItems = 1 + filteredClaims.length; // 1 for claim button + existing claims
+          const totalItems = 1 + filteredClaims.length;
           const remainingInRow = columnsPerRow - (totalItems % columnsPerRow);
           const shouldShowPlaceholders = remainingInRow < columnsPerRow && remainingInRow > 0;
 

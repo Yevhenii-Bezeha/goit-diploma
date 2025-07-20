@@ -17,7 +17,6 @@ export const OfficeSelector = ({ name, className = '', label = 'Artist Profile',
     helpers.setValue(value === '' ? null : value);
   };
 
-  // Simplified options for diploma version
   const profileOptions = [
     { value: 'solo', label: 'Solo Artist' },
     { value: 'band', label: 'Band Member' },

@@ -21,11 +21,9 @@ export const ArtistAvatar = ({ className = '{Artist name}', src = logo }: Artist
   };
 
   useEffect(() => {
-    // Reset image error state when image_url changes
     setImageError(false);
   }, [image_url]);
 
-  // Determine display name for the avatar
   const displayName = first_name && last_name ? `${first_name} ${last_name}` : user_name || 'Artist';
 
   const handleImageError = () => {
@@ -40,7 +38,6 @@ export const ArtistAvatar = ({ className = '{Artist name}', src = logo }: Artist
         }
       `}</style>
 
-      {/* Avatar Image */}
       <div className="flex items-center">
         {image_url && !imageError ? (
           <img
@@ -82,7 +79,7 @@ export const ArtistAvatar = ({ className = '{Artist name}', src = logo }: Artist
         <span className={'text-xs ml-2 text-white'}>{displayName}</span>
       </div>
 
-      {/* Logout Button Only */}
+
       <button
         onClick={handleLogout}
         className="p-1 text-violet-200 hover:text-red-400 transition-colors"

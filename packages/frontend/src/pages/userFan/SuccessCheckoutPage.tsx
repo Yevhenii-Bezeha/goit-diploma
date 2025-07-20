@@ -5,7 +5,6 @@ import { useGetPieActiveQuery } from '../../redux/userFan';
 const SuccessCheckoutPage = () => {
   const navigate = useNavigate();
 
-  // Poll for pie creation after payment
   const pieQuery = useGetPieActiveQuery(undefined, {
     refetchOnMountOrArgChange: false,
     refetchOnFocus: false,
@@ -13,14 +12,12 @@ const SuccessCheckoutPage = () => {
   const { data: { data: pieData } = {}, isError } = pieQuery;
 
   useEffect(() => {
-    // Start polling for pie creation immediately
     let pollCount = 0;
-    const maxPolls = 5; // Stop polling after 5 attempts
+    const maxPolls = 5;
     let pollTimer: NodeJS.Timeout | null = null;
 
     const pollWithBackoff = async () => {
       if (pollCount >= maxPolls) {
-        // If we've reached max polls and still no pie, navigate anyway
         navigate('/pie?fetchMissingTracks=1');
         return;
       }
@@ -32,12 +29,10 @@ const SuccessCheckoutPage = () => {
         console.warn('Failed to refetch pie data:', error);
       }
 
-      // Exponential backoff: 5s, 8s, 12s, 18s, 25s
       const delay = 5000 + pollCount * 3000;
       pollTimer = setTimeout(pollWithBackoff, delay);
     };
 
-    // Start polling after 3 seconds to allow initial query to complete
     const initialTimer = setTimeout(() => {
       pollWithBackoff();
     }, 3000);
@@ -49,13 +44,11 @@ const SuccessCheckoutPage = () => {
   }, [pieQuery, navigate]);
 
   useEffect(() => {
-    // If pie is found during polling or there's an error, navigate immediately
     if (pieData || isError) {
       navigate('/pie?fetchMissingTracks=1');
       return;
     }
 
-    // Fallback timer - redirect after 25 seconds if polling doesn't work
     const fallbackTimer = setTimeout(() => {
       navigate('/pie?fetchMissingTracks=1');
     }, 25000);
@@ -77,9 +70,7 @@ const SuccessCheckoutPage = () => {
         color: 'white',
       }}
     >
-      {/* Enhanced Success Content */}
       <div className="max-w-md mx-auto">
-        {/* Success Icon */}
         <div className="mb-8">
           <div
             style={{
@@ -99,7 +90,6 @@ const SuccessCheckoutPage = () => {
           </div>
         </div>
 
-        {/* Academic Title and Description */}
         <div className="mb-8">
           <h1
             style={{
@@ -128,7 +118,6 @@ const SuccessCheckoutPage = () => {
           </p>
         </div>
 
-        {/* Enhanced Progress Indicator */}
         <div className="mb-8">
           <div
             style={{
@@ -147,7 +136,6 @@ const SuccessCheckoutPage = () => {
           </p>
         </div>
 
-        {/* Academic Information Box */}
         <div
           style={{
             background: 'rgba(139, 92, 246, 0.1)',
@@ -173,7 +161,6 @@ const SuccessCheckoutPage = () => {
           </div>
         </div>
 
-        {/* Enhanced CSS Animations */}
         <style>{`
           @keyframes spin {
             0% { transform: rotate(0deg); }

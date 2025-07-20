@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { ArtistMobileNavOverlay } from '../ArtistMobileNavOverlay/ArtistMobileNavOverlay';
-import { trackButtonClick, ButtonClickEvents } from '../../../utils/analytics';
+
 import { ArtistAvatar } from '../ArtistAvatar';
 
 export const ArtistHeader = () => {
@@ -10,23 +10,19 @@ export const ArtistHeader = () => {
   const lastScrollY = useRef(0);
   const location = useLocation();
 
-  // Simplified page names for diploma version
   const pageNames: Record<string, string> = {
     '/for-artists/artists': 'Artists',
     '/for-artists/funds': 'Funds',
     '/for-artists/profile/update': 'Profile',
   };
 
-  // Get current page name
   const getCurrentPageName = () => {
     const path = location.pathname;
 
-    // Check for exact matches first
     if (pageNames[path]) {
       return pageNames[path];
     }
 
-    // Handle dynamic routes
     if (path.startsWith('/for-artists/artists/')) {
       return 'Artist Details';
     }
@@ -39,29 +35,23 @@ export const ArtistHeader = () => {
       }
     }
 
-    // Default fallback
     return 'Micro-Donations';
   };
 
   const currentPageName = getCurrentPageName();
 
-  // Simple scroll handler that works reliably
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Always visible on desktop
       if (window.matchMedia('(min-width: 768px)').matches) {
         setIsVisible(true);
         return;
       }
 
-      // Mobile behavior - simple up/down detection
       if (currentScrollY < lastScrollY.current || currentScrollY < 10) {
-        // Scrolling up or at top - show header
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY.current && currentScrollY > 72) {
-        // Scrolling down and not at top - hide header
         setIsVisible(false);
       }
 
@@ -74,7 +64,6 @@ export const ArtistHeader = () => {
 
   const handleOpenMobileMenu = () => {
     setIsMobileNavOpen(true);
-    trackButtonClick(ButtonClickEvents.OPEN_MOBILE_MENU, 'artist_header');
   };
 
   return (
@@ -86,21 +75,18 @@ export const ArtistHeader = () => {
       }}
     >
       <div className="flex w-full items-center relative">
-        {/* Logo (always left) */}
         <div className="pl-4 flex items-center min-w-0">
           <div className="h-8 w-8 bg-white rounded flex items-center justify-center">
             <span className="text-violet-600 text-sm font-bold">MD</span>
           </div>
         </div>
 
-        {/* Centered page name */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center">
           <span className="text-white text-lg font-semibold truncate text-center w-full">
             {currentPageName}
           </span>
         </div>
 
-        {/* Desktop avatar (right) */}
         <div className="hidden md:flex items-center min-w-0 pr-6 gap-4 ml-auto">
           <ArtistAvatar />
         </div>

@@ -1,29 +1,20 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import Google from '../../assets/icons/google.svg';
-import { trackBusinessEvent, BusinessEvents } from '../../utils/analytics';
+
 
 const LoginPage = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleGoogleLogin = async () => {
     try {
       setIsGoogleLoading(true);
-      if (!executeRecaptcha) {
-        console.error('reCAPTCHA not initialized');
-        setIsGoogleLoading(false);
-        return;
-      }
-      const token = await executeRecaptcha('artist_google_login');
       const baseUrl = process.env.NODE_ENV === 'production'
         ? 'https://mypie.app/api/for-artists/auth/loginGoogle'
         : 'http://localhost:3000/api/for-artists/auth/loginGoogle';
-      window.location.href = `${baseUrl}?recaptchaToken=${token}`;
-      trackBusinessEvent(BusinessEvents.LOGIN_GOOGLE);
+      window.location.href = baseUrl;
     } catch (error) {
-      console.error('reCAPTCHA verification failed:', error);
+      console.error('Google login failed:', error);
       setIsGoogleLoading(false);
     }
   };

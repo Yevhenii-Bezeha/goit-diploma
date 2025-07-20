@@ -36,7 +36,6 @@ export const Modal = ({
   const panelRef = useRef<HTMLDivElement>(null);
   const [allowClose, setAllowClose] = useState(false);
 
-  // Listen for Escape key to allow close
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -55,10 +54,8 @@ export const Modal = ({
         onClose();
       }
     }
-    // Otherwise, ignore (outside click)
   };
 
-  // Close button and onBack should always close
   const forceClose = () => {
     setIsOpen(false);
     setAllowClose(false);

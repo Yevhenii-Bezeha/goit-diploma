@@ -4,7 +4,7 @@ import { useGetUserQuery } from '../../redux/userFan';
 import Close from '../../assets/icons/close.svg';
 import classnames from 'classnames';
 import { useEffect } from 'react';
-import { trackButtonClick, trackBusinessEvent, BusinessEvents, ButtonClickEvents } from '../../utils/analytics';
+
 import DashboardIcon from '../../assets/icons/dashboard.svg';
 import PieIcon from '../../assets/icons/pie.svg';
 import ReactAvatar from 'react-avatar';
@@ -21,8 +21,6 @@ export const MobileNavOverlay = ({ open, onClose }: MobileNavOverlayProps) => {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
-      // Track when the mobile menu is opened
-      trackButtonClick(ButtonClickEvents.OPEN_MOBILE_MENU, 'navigation');
     } else {
       document.body.style.overflow = '';
     }
@@ -32,13 +30,9 @@ export const MobileNavOverlay = ({ open, onClose }: MobileNavOverlayProps) => {
   }, [open]);
 
   const handleLogout = () => {
-    // Track logout action
-    trackBusinessEvent(BusinessEvents.LOGOUT);
-
     Cookies.remove('mypie_access_token_fan');
     window.location.reload();
   };
-  // Get user's name or use a fallback
   const userName = userData?.data?.user_name;
 
   return (

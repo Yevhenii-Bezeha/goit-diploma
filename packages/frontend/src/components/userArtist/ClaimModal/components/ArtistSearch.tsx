@@ -5,7 +5,7 @@ import { ArtistSearchResult } from '../../../../redux/userArtist/userArtistApi';
 import { ArtistRow } from './ArtistRow';
 import { useEffect, useRef, useState } from 'react';
 import { useDebouncedValue } from '@mantine/hooks';
-import { trackButtonClick, ButtonClickEvents } from '../../../../utils/analytics';
+
 
 type ArtistSearchProps = {
   searchResults: ArtistSearchResult[] | undefined;
@@ -22,10 +22,8 @@ export const ArtistSearch = ({ searchResults, isFetching, onSearch }: ArtistSear
   const [showDelayedMessage, setShowDelayedMessage] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Use debounced value to trigger search
   useEffect(() => {
     if (debouncedSearch?.trim()) {
-      // Only trigger search if the term has changed
       if (debouncedSearch.trim() !== previousSearchRef.current) {
         previousSearchRef.current = debouncedSearch.trim();
         onSearch(debouncedSearch.trim());
@@ -33,15 +31,12 @@ export const ArtistSearch = ({ searchResults, isFetching, onSearch }: ArtistSear
     }
   }, [debouncedSearch, onSearch]);
 
-  // Show delayed message after 2 seconds of loading
   useEffect(() => {
     if (isFetching) {
-      // Set a timer to show the delayed message after 2 seconds
       timerRef.current = setTimeout(() => {
         setShowDelayedMessage(true);
       }, 2000);
     } else {
-      // Clear timer and hide message when not fetching
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
@@ -49,7 +44,6 @@ export const ArtistSearch = ({ searchResults, isFetching, onSearch }: ArtistSear
       setShowDelayedMessage(false);
     }
 
-    // Clean up timer on unmount
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
@@ -65,7 +59,6 @@ export const ArtistSearch = ({ searchResults, isFetching, onSearch }: ArtistSear
       const selectedArtistData = searchResults.find((artist) => artist._id === artistId);
       selectedArtistDataHelpers.setValue(selectedArtistData || null);
 
-      trackButtonClick(ButtonClickEvents.SELECT_ARTIST_IN_CLAIM_MODAL, 'claim_modal');
     } else {
       selectedArtistDataHelpers.setValue(null);
     }

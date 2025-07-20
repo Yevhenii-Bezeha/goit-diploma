@@ -2,7 +2,6 @@ import ReportIcon from '../../../../assets/icons/report.svg';
 
 export const ClaimedArtistBanner = () => {
   const handleReportClick = () => {
-    console.log('Support contact requested');
   };
 
   return (

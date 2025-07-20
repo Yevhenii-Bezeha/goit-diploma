@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { LoginModal } from '../modals/LoginModal';
 import { useEffect, useState, useRef } from 'react';
 import { MobileNavOverlay } from '../MobileNavOverlay';
-import { trackButtonClick, ButtonClickEvents } from '../../../utils/analytics';
+
 
 export const Header = () => {
   const isAuth = Cookies.get('mypie_access_token_fan');
@@ -14,7 +14,6 @@ export const Header = () => {
   const lastScrollY = useRef(0);
   const location = useLocation();
 
-  // Map routes to page names - only available routes for university prototype
   const pageNames: Record<string, string> = {
     '/dashboard': 'Dashboard',
     '/pie': 'Pie',
@@ -23,23 +22,18 @@ export const Header = () => {
   };
   const currentPageName = pageNames[location.pathname] || '';
 
-  // Simple scroll handler that works reliably
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Always visible on desktop
       if (window.matchMedia('(min-width: 768px)').matches) {
         setIsVisible(true);
         return;
       }
 
-      // Mobile behavior - simple up/down detection
       if (currentScrollY < lastScrollY.current || currentScrollY < 10) {
-        // Scrolling up or at top - show header
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY.current && currentScrollY > 72) {
-        // Scrolling down and not at top - hide header
         setIsVisible(false);
       }
 
@@ -52,7 +46,6 @@ export const Header = () => {
 
   const handleOpenMobileMenu = () => {
     setIsMobileNavOpen(true);
-    trackButtonClick(ButtonClickEvents.OPEN_MOBILE_MENU, 'header');
   };
 
   return (
@@ -61,11 +54,9 @@ export const Header = () => {
       style={{ transform: isVisible ? 'translateY(0)' : 'translateY(-100%)' }}
     >
       <div className="flex w-full items-center justify-between px-6 max-w-7xl mx-auto">
-        {/* Logo and Brand */}
         <div className="flex items-center space-x-4">
           <NavLink to="/dashboard" className="flex items-center cursor-pointer group">
             <div className="flex items-center space-x-2">
-              {/* Research Icon */}
               <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
                 <svg
                   width="20"
@@ -91,12 +82,10 @@ export const Header = () => {
           </NavLink>
         </div>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <NavigationLinks />
         </div>
 
-        {/* Desktop User Actions */}
         <div className="hidden md:flex items-center space-x-4">
           {isAuth ? (
             <div className="flex items-center space-x-3">
@@ -108,7 +97,6 @@ export const Header = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
           <button
             className="flex items-center justify-center p-2 rounded-lg bg-purple-800/50 hover:bg-purple-700/50 transition-colors"
@@ -132,7 +120,6 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Page Title */}
       <div className="md:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <span className="text-white text-base font-semibold truncate max-w-32">
           {currentPageName}

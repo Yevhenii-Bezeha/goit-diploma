@@ -1,8 +1,7 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import './App.css';
-import { CookieName, getCookie, initCookieManager } from './utils/cookieManager';
-import { hasSetCookiePreferences } from './utils/cookieTypes';
+import { CookieName, getCookie } from './utils/cookieManager';
 import { GlobalErrorBoundary } from './components/shared/ErrorBoundary/ErrorBoundary';
 
 // Lazy loaded components
@@ -21,9 +20,6 @@ const SharedLayout = lazy(() =>
 );
 const CookieBanner = lazy(() =>
   import('./components/shared/CookieBanner/CookieBanner').then((module) => ({ default: module.CookieBanner }))
-);
-const PWAInstallPrompt = lazy(() =>
-  import('./components/shared/PWAInstallPrompt/PWAInstallPrompt').then((module) => ({ default: module.default }))
 );
 const CompleteRegistration = lazy(() => import('./pages/userArtist/CompleteRegistration'));
 
@@ -200,21 +196,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  useEffect(() => {
-    // Initialize cookie manager when the app starts
-    initCookieManager();
 
-    // Check if user has set cookie preferences
-    const hasPreferences = hasSetCookiePreferences();
-
-    // If no preferences are set, show the cookie banner
-    if (!hasPreferences) {
-      // The CookieBanner component will handle showing the banner
-      console.log('No cookie preferences set, showing banner');
-    } else {
-      console.log('Cookie preferences already set');
-    }
-  }, []);
 
   return (
     <GlobalErrorBoundary>
@@ -226,12 +208,6 @@ const App = () => {
         </div>
         <Suspense fallback={<div>Loading cookie banner...</div>}>
           <CookieBanner />
-        </Suspense>
-        <Suspense fallback={null}>
-          <PWAInstallPrompt
-            onInstall={() => console.log('PWA installed successfully!')}
-            onDismiss={() => console.log('PWA install prompt dismissed')}
-          />
         </Suspense>
       </div>
     </GlobalErrorBoundary>

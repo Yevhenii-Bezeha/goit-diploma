@@ -3,7 +3,7 @@ import { ClaimFormValues, ClaimFormInternalValues } from '../validation';
 import { useCreateClaimMutation } from '../../../../redux/userArtist/userArtistApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import { trackBusinessEvent, BusinessEvents } from '../../../../utils/analytics';
+
 
 const initialValues: ClaimFormInternalValues = {
   searchTerm: '',
@@ -68,7 +68,6 @@ export const useClaimFlow = (onChange?: () => void) => {
   const handleSubmit = async (values: ClaimFormInternalValues) => {
     if (isSubmitting) return;
 
-    // Guard: Ensure selectedPlatform is not null
     if (!values.selectedPlatform) {
       setErrorMessage('Please select a platform before continuing.');
       setIsSubmitting(false);
@@ -80,29 +79,22 @@ export const useClaimFlow = (onChange?: () => void) => {
       setErrorMessage(null);
       setFormValues(values);
 
-      // Track the verification method chosen
-      trackBusinessEvent(BusinessEvents.ARTIST_CLAIMED, {
-        verification_method: values.verificationMethod,
-      });
 
-      // For manual verification, create a claim through API
       const submissionValues: ClaimFormValues = {
         selectedArtist: values.selectedArtist!,
         agreesToWaiver: values.agreesToWaiver,
         agreesToFundsTerms: values.agreesToFundsTerms,
         agreesToTerms: values.agreesToTerms,
-        verificationMethod: 'link', // Always manual verification
+        verificationMethod: 'link',
         platformName: values.selectedPlatform!.name,
         verificationString: values.verificationString,
       };
 
-      // Use the selected office ID from Redux instead of the form value
       if (selectedOffice?._id) {
         submissionValues.officeId = selectedOffice._id;
       }
 
       const result = await createClaim(submissionValues).unwrap();
-      // Store the created claim ID
       if (result && result.data && result.data._id) {
         setCreatedClaimId(result.data._id);
       }
@@ -113,7 +105,6 @@ export const useClaimFlow = (onChange?: () => void) => {
         error instanceof Error
           ? error.message
           : (error as any)?.data?.message || 'Failed to create claim. Please try again.';
-      // User-friendly override for known backend error
       if (
         errorMsg === 'You or your office already has a pending claim for this artist' ||
         (error as any)?.data?.code === 'BAD_REQUEST'
@@ -134,7 +125,7 @@ export const useClaimFlow = (onChange?: () => void) => {
         verificationMethod: null,
         selectedPlatform: null,
       };
-      return { ...newValues }; // ensure new object reference
+      return { ...newValues };
     });
     setFormResetKey((k) => k + 1);
   };

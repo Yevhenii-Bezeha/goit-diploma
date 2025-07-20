@@ -38,20 +38,16 @@ export const FindArtistStep = ({
   const [showClaimedBanner, setShowClaimedBanner] = useState(false);
   const [pendingClaimError, setPendingClaimError] = useState<string | null>(null);
 
-  // Get the selected artist data
   const selectedArtist = searchResults?.find((artist) => artist._id === values.selectedArtist);
 
-  // Get selected office from Redux
   const selectedOffice = useSelector((state: RootState) => state.userArtist.selectedOffice);
   const officeId = selectedOffice?._id;
 
-  // Fetch all claims for the current office
   const { data: claims = [], isLoading: isClaimsLoading } = useGetClaimsQuery(
     { officeId },
     { skip: !officeId }
   );
 
-  // Check for pending claim for selected artist
   const hasPendingClaim = !!(
     values.selectedArtist &&
     claims.some(
@@ -61,7 +57,6 @@ export const FindArtistStep = ({
     )
   );
 
-  // Show error if pending claim exists
   React.useEffect(() => {
     if (hasPendingClaim) {
       setPendingClaimError(
@@ -97,10 +92,8 @@ export const FindArtistStep = ({
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
           <ArtistSearch searchResults={searchResults} isFetching={isFetching} onSearch={onSearch} />
 
-          {/* Show the claimed artist banner when a user tries to continue with a claimed artist */}
           {showClaimedBanner && <ClaimedArtistBanner />}
 
-          {/* Show pending claim error if exists */}
           {pendingClaimError && (
             <div className="bg-red-900/20 border border-red-500 text-red-200 p-3 my-4 rounded-md text-center text-sm">
               {pendingClaimError}

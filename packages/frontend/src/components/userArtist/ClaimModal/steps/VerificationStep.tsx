@@ -29,7 +29,6 @@ export const VerificationStep = ({
   const { values, setFieldValue, validateForm } = useFormikContext<ClaimFormInternalValues>();
   const selectedOffice = useSelector((state: RootState) => state.userArtist.selectedOffice);
 
-  // Set verification method to 'link' (manual verification) by default
   useEffect(() => {
     if (!values.verificationMethod) {
       setFieldValue('verificationMethod', 'link');

@@ -36,11 +36,9 @@ export const ClaimReceivedStep = ({ onClose }: { onClose: () => void }) => {
     setIsLoading(true);
     try {
       if (selectedOffice?.stripe_connect_account_status === 'complete') {
-        // For completed accounts, ensure we have a login URL
         if (loginData?.url) {
           window.open(loginData.url, '_blank');
         } else {
-          // If no URL is available, force a refetch and wait for the result
           const result = await refetchLoginLink().unwrap();
           if (result?.url) {
             window.open(result.url, '_blank');
@@ -49,7 +47,6 @@ export const ClaimReceivedStep = ({ onClose }: { onClose: () => void }) => {
           }
         }
       } else {
-        // For new accounts or incomplete setups, create a new onboarding link
         const { url } = await createStripeOnboardingLink({ officeId }).unwrap();
         window.open(url, '_blank');
       }
@@ -75,12 +72,10 @@ export const ClaimReceivedStep = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  // Only show verification message
   const getVerificationMessage = () => {
     return 'We will need 3 to 5 days to manually verify your account and will notify you via email when your account is ready. In the meantime you can access or cancel your claim from the Artists list screen.';
   };
 
-  // If no office is selected, show a message
   if (!selectedOffice) {
     return (
       <div className="flex flex-col items-center justify-center">

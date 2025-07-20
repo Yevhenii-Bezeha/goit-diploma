@@ -35,7 +35,6 @@ export const ArtistsList = ({
     }
   }, [currentPage]);
 
-  // Helper to handle sort toggling
   const handleSort = (key: 'donated' | 'listened') => {
     if (!setSortKey || !setSortDirection) return;
     if (sortKey === key) {
@@ -46,7 +45,6 @@ export const ArtistsList = ({
     }
   };
 
-  // Helper to show sort arrow
   const renderSortArrow = (key: 'donated' | 'listened') => {
     if (sortKey !== key) return null;
     return sortDirection === 'asc' ? ' ▲' : ' ▼';

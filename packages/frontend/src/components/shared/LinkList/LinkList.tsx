@@ -14,7 +14,6 @@ type LinkListProps = {
 export const LinkList = ({ className, items, onItemClick }: LinkListProps) => {
   const isAdmin = useSelector(isUserOfficeAdminSelector);
 
-  // Filter items to only show admin items if the user is an admin
   const filteredItems = items.filter((item) => !item.isAdmin || isAdmin);
 
   return (

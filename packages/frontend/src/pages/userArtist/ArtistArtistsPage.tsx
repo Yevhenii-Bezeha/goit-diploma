@@ -23,36 +23,30 @@ const ArtistArtistsPage = () => {
   const { data: offices, isLoading: officesLoading } = useGetOfficesQuery();
   const { data: userInfo, isLoading: userLoading } = useGetUserArtistQuery();
 
-  // Set initial load complete after office data is loaded
   useEffect(() => {
     if (!officesLoading && !userLoading) {
       setInitialLoadComplete(true);
     }
   }, [officesLoading, userLoading]);
 
-  // Only make the API call when we have the office ID and initial load is complete
   const { data: claims = [], isLoading: isClaimsLoading } = useGetClaimsQuery(
     {
       officeId: selectedOffice?._id,
     },
     {
-      // Skip the query until we have a selected office and initial load is complete
       skip: !initialLoadComplete || !selectedOffice?._id,
     }
   );
 
-  // Filter claims by status
   const claimedArtists = claims.filter((claim) => claim.claim.status === 'Successful');
   const pendingArtists = claims.filter((claim) => claim.claim.status === 'Pending');
 
-  // Reset active tab if needed when claims change
   useEffect(() => {
     if (claimedArtists.length === 0 && activeTab === 0) {
       setActiveTab(0);
     }
   }, [claimedArtists.length, activeTab]);
 
-  // Show a message if user has incomplete profile and no offices
   if (
     initialLoadComplete &&
     !officesLoading &&
@@ -76,7 +70,6 @@ const ArtistArtistsPage = () => {
     );
   }
 
-  // Show a message if user has complete profile but no offices
   if (initialLoadComplete && !officesLoading && (!offices || offices.length === 0) && isProfileComplete) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8">
@@ -91,7 +84,6 @@ const ArtistArtistsPage = () => {
     );
   }
 
-  // Show a message if no office is selected
   if (!selectedOffice && initialLoadComplete) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -103,7 +95,6 @@ const ArtistArtistsPage = () => {
     );
   }
 
-  // Determine if the page is still loading - either we're waiting for office selection or the claims data
   const isLoading = !initialLoadComplete || isClaimsLoading || !userInfo;
 
   if (isLoading) {
@@ -122,7 +113,6 @@ const ArtistArtistsPage = () => {
     setActiveTab(index);
   };
 
-  // Determine which tabs to show
   const tabs = [];
   const tabContent = [];
 
@@ -141,26 +131,20 @@ const ArtistArtistsPage = () => {
 
   return (
     <div className="flex flex-col items-left w-full h-full">
-      {/* Mobile Header with space for hamburger and tabs */}
       {claims.length > 0 && tabs.length > 0 && (
         <div className="sm:hidden">
-          {/* Background bar that spans full width */}
           <div className="bg-black h-16 flex items-start px-4 pt-4">
-            {/* Space for hamburger (64px + padding) - pushed up 6px */}
             <div className="w-16 flex-shrink-0 -mt-1.5"></div>
-            {/* Tabs taking remaining space */}
             <div className="flex-1">
               <Tabs tabs={tabs} selectedIndex={activeTab} onChange={handleTabChange} />
             </div>
           </div>
-          {/* Content */}
           <div className="px-4 py-0">
             {tabContent[activeTab]}
           </div>
         </div>
       )}
 
-      {/* Desktop version */}
       {claims.length > 0 && tabs.length > 0 && (
         <div className="hidden sm:block px-4 md:px-8 py-0 mt-4 sm:mt-6">
           <Tabs tabs={tabs} selectedIndex={activeTab} onChange={handleTabChange}>
