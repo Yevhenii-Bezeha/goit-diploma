@@ -1,6 +1,4 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { SeverityLevel } from '@microsoft/applicationinsights-web';
-import { appInsights } from '../../../utils/appInsights';
 import { useNavigate } from 'react-router-dom';
 
 interface FallbackProps {
@@ -65,7 +63,7 @@ if (import.meta.env.DEV) {
   });
 }
 
-// Custom Error Boundary that tracks errors with App Insights
+// Custom Error Boundary
 export class GlobalErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
@@ -86,19 +84,6 @@ export class GlobalErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log the error to Application Insights
-    if (appInsights) {
-      appInsights.trackException({
-        error: error,
-        exception: error,
-        severityLevel: SeverityLevel.Error,
-        properties: {
-          componentStack: errorInfo.componentStack,
-          ...errorInfo,
-        },
-      });
-    }
-
     // Update state with error details
     this.setState({
       errorInfo,

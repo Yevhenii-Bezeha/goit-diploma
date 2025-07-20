@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useRouteError } from 'react-router-dom';
-import { appInsights } from '../utils/appInsights';
-import { SeverityLevel } from '@microsoft/applicationinsights-web';
 import { GlobalErrorBoundary } from '../components/shared/ErrorBoundary/ErrorBoundary';
 
 interface ErrorPageProps {
@@ -21,22 +19,10 @@ const ErrorPage = ({ title = 'Error', error }: ErrorPageProps) => {
     const errorTypeFromUrl = params.get('type') || 'unknown';
     setErrorType(errorTypeFromUrl);
 
-    // Log the error to Application Insights in production
+    // Log the error to console
     const errorToLog = error || routeError;
     if (errorToLog) {
       console.error('Error caught by ErrorPage:', errorToLog);
-
-      // Track the error in App Insights
-      appInsights.trackException({
-        exception: errorToLog,
-        severityLevel: SeverityLevel.Error,
-        properties: {
-          errorType: errorTypeFromUrl,
-          url: window.location.href,
-          component: 'ErrorPage',
-          routePath: location.pathname,
-        },
-      });
     }
   }, [location, error, routeError]);
 
