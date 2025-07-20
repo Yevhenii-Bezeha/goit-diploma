@@ -1,0 +1,19 @@
+.pie-popover-panel {
+  top: 0;
+  right: 100%;
+  transform: none;
+  margin-right: 8px;
+}
+@media (max-width: 639px) {
+  .pie-popover-panel {
+    top: 0;
+    bottom: auto;
+    right: 100%;
+    left: auto;
+    transform: none;
+    margin-right: 8px;
+    margin-top: 0;
+    min-width: 12rem;
+    max-width: 90vw;
+  }
+} 

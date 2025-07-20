@@ -29,7 +29,6 @@ const PWAInstallPrompt = lazy(() =>
 
 // Error page
 const ErrorPage = lazy(() => import('./pages/ErrorPage'));
-const PieSettingsPage = lazy(() => import('./pages/userFan/PieSettingsPage'));
 // Fan auth pages
 const FanLoginPage = lazy(() => import('./pages/userFan/LoginPage'));
 
@@ -77,10 +76,6 @@ const router = createBrowserRouter([
       {
         path: 'pie/successCheckout',
         element: <SuccessCheckoutPage />,
-      },
-      {
-        path: 'pie/settings',
-        element: <PieSettingsPage />,
       },
       {
         path: '*',

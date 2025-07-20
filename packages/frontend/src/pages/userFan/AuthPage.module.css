@@ -1,0 +1,26 @@
+.container {
+  background-color: #dedede;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-width: 0;
+  min-height: max(767px, 100%);
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+  z-index: 2;
+  height: max-content;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  opacity: 1;
+  background-image: url('../../assets/image/bg.png');
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
+} 
